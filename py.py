@@ -1,0 +1,5 @@
+a = input('yoo\n')
+print('Jay Shree Ganesha', a, '\n')
+print('Jay Shree Ganesha\n')
+a = input('yoo\n')
+print('Jay Shree Ganesha\n')
