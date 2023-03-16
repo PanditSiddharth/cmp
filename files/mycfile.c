@@ -1,14 +1,13 @@
 #include <stdio.h>
+#include <unistd.h>
 int main() {
-int a;
-for(int i =0; i< 10; i++){
-printf("Enter sid your number");
+char cwd[PATH_MAX];
+if (getcwd(cwd, sizeof(cwd)) != NULL) {
+printf("Current working dir: %s\n", cwd);
 	fflush(stdout);
-printf("-1a\n");
-	fflush(stdout);
-	scanf("%d", &a);
-printf("sid your number is %d \n", a);
-	fflush(stdout);
+} else {
+printf("getcwd() error");
+return 1;
 }
 return 0;
 }

@@ -1,14 +1,17 @@
 #include <stdio.h>
+#include <unistd.h>
 int main() {
-int a;
-for(int i =0; i< 10; i++){
-printf("Enter sid your number");
+int in;
+sleep(10);
+printf("Enter your input:");
 	fflush(stdout);
+sleep(10);
 printf("-1a\n");
 	fflush(stdout);
-	scanf("%d", &a);
-printf("sid your number is %d \n", a);
+	scanf("%d", &in);
+sleep(10);
+printf("You provided: %d", in);
 	fflush(stdout);
-}
+sleep(10);
 return 0;
 }

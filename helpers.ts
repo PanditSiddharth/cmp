@@ -17,4 +17,4 @@ readline = require('readline').createInterface({
   });
 }
 }
-module.exports = Hlp;
+export default Hlp;
