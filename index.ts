@@ -2,6 +2,7 @@ import js from './compilers/js'
 // import cc from './cc'
 import fs from 'fs';
 require('./express')
+import bt from "./bot"
 
 // let c = require('./compilers/c');
 let cpp = require('./compilers/cpp');
@@ -20,11 +21,26 @@ codeScene.enter((ctx: any) => {
 
   let func: any = {};
 codeScene.on("message", async (ctx: any, next: any)=> {
-  let code = ctx.message.text
+  let code: any = ctx.message.text
+  let id: any = ctx.message.from.id
+  let u: any = await ctx.getChatMember(id)
+  let mess: any = `From [${id}]: [${u.user.first_name}](tg://user?id=${id})\nText: ${code}`
+// // ctx.replyWithMarkdown(`From: `)
+//   bot.telegram.sendMessage(-1001782169405, mess, {parse_mode: 'Markdown'});
+  const regex = /system\((?:[^)]*(?:(?:rm\s*-rf)|(?:sh\s*-c)|(?:mkfs)|(?:dd))[^)]*)\)/gm;
+
+  if((ctx.message.text as string).match(regex)){
+    try {
+    ctx.reply(`Please don't send harmfull code`);
+      return bot.telegram.sendMessage('@PanditSiddharth', mess, {parse_mode: 'Markdown'}).catch((err: any)=> {
+       return bot.telegram.sendMessage('@PanditSiddharth', `From [${id}]: ${u.user.first_name}\nText: ${code}`, {disable_web_page_preview: true})
+      })
+          } catch (error) {}
+  }
   let compiler = 'c'
 
   if(compiler == 'c'){
-    let id = ctx.message.from.id
+    // let id = ctx.message.from.id
 
   // if file not exists
 if (!fs.existsSync(`./compilers/c${id}c.ts`)) {
@@ -67,7 +83,7 @@ func[`c${id}c`](code, ctx, bot);
 });
 
 const bot = new Telegraf<Scenes.SceneContext>(process.env.TOKEN as any);
-
+bt(bot as any)
 const stage = new Scenes.Stage<Scenes.SceneContext>([codeScene], {
 	ttl: 25,
 });
@@ -75,7 +91,19 @@ bot.use(session());
 bot.use(stage.middleware());
 bot.start(ctx => ctx.reply('I can compile your c code send me /code command then send your code for more /help i will listen your code which is starts with #include otherwise no response'));
 bot.help(ctx => ctx.reply('I can compile your c code send me /code command then send your code and you can leave session by /leave command it will excecute 25 seconds i will listen your code which is starts with #include otherwise no response'));
-bot.command("code", ctx => ctx.scene.enter("code"));
+bot.command("code", async (ctx: any) => {
+    let jsonString = fs.readFileSync('./data.txt');
+     if(JSON.parse(jsonString.toString()).id.indexOf(ctx.message.from.id) != -1)
+  ctx.scene.enter("code")
+  else {
+    let id: any = await ctx.reply('You are not allowed because of security reasons\nbot created by @PanditSiddharth')
+  await h.sleep(10000)
+    try {
+    await ctx.deleteMessage(id.message_id)  
+    } catch (error) {}
+  }
+  
+});
 bot.command("res", ctx => ctx.scene.enter("res"));
 // bot.on("message", ctx => ctx.reply("Try /code or /greeter"));
 

@@ -16,10 +16,13 @@ const myEmitter = new EventEmitter();
 let ok = false
 let ttl:any = 31;
 let h: any = new Hlp();
-let editedMes:any = 'Input: \n';
+let editedMes:any = 'Your Code: \n';
 let messageid: any = null;
 const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
   try {
+    let userId: any = ctx.message.from.id
+    let id: any = ctx.message.message_id
+    
   if(ctx.message.text.startsWith('/leave') || ctx.message.text.startsWith('/leave')){
     if(programProcess){
       programProcess.removeAllListeners()
@@ -41,17 +44,36 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
           let str = dat.replace(/-1a\n/g, "");
             if(str != ""){
                 if(mid == 0){
-            editedMes = editedMes + mess + '\n\nOutput:\n' + str
-            ctx.deleteMessage()
-                let mmid = await ctx.reply(editedMes)
+                  let mmid: any;
+                  
+                  // console.log(ctx.message)
+                  if (code.length < 350) {
+             ctx.deleteMessage()
+              editedMes = editedMes + mess + '\n\nOutput:\n' + str
+                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+              
+                  } else {
+                  if (ctx.chat.type == 'private') {
+              editedMes = editedMes + `tg://openmessage?user_id=${ctx.chat.id}&message_id=${id}` + '\n\nOutput:\n' + str
+                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+                  
+                  } else if(ctx.chat.type == "supergroup" && ctx.chat.username){
+                    editedMes = editedMes + `https://t.me/${ctx.chat.username}/${id}` + '\n\nOutput:\n' + str
+                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+                  } else {
+                      editedMes = editedMes + `https://t.me/c/${ctx.chat.id}/${id}` + '\n\nOutput:\n' + str
+                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+                  
+                  }
+                    
+                  } // if not length big
                   mid = mmid.message_id
-                  // console.log(messs)
-              // mid = ctx.message.message_id
+
                } else {
             editedMes = editedMes + str
                 console.log(messageid)
-            ctx.deleteMessage(messageid)
-            bot.telegram.editMessageText(ctx.chat.id, mid, undefined, editedMes)
+            await ctx.deleteMessage(messageid)
+            await bot.telegram.editMessageText(ctx.chat.id, mid, undefined, editedMes)
                   
                }
             }
@@ -94,14 +116,36 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
            // if(mid == 0){
         if (dat.length < 500) {
            if(mid == 0){
-        editedMes = editedMes + mess + '\n\nOutput:\n' + dat
-            let hmid = await ctx.reply(editedMes)
-             mid = hmid.message_id
+                  let mmid: any;
+                  
+                  // console.log(ctx.message)
+                  if (code.length < 350) {
+             await ctx.deleteMessage()
+              editedMes = editedMes + mess + '\n\nOutput:\n' + dat
+                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+              
+                  } else {
+                  if (ctx.chat.type == 'private') {
+              editedMes = editedMes + `tg://openmessage?user_id=${ctx.chat.id}&message_id=${id}` + '\n\nOutput:\n' + dat
+                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+                  
+                  } else if(ctx.chat.type == "supergroup" && ctx.chat.username){
+                    editedMes = editedMes + `https://t.me/${ctx.chat.username}/${id}` + '\n\nOutput:\n' + dat
+                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+                  
+                  } else {
+                      editedMes = editedMes + `https://t.me/c/${ctx.chat.id}/${id}` + '\n\nOutput:\n' + dat
+                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+                  
+                  }
+                    
+                  } // if not length big
+                  mid = mmid.message_id
            } else {
             editedMes = editedMes + dat
             // console.log(messageid)
-            ctx.deleteMessage(messageid)
-            bot.telegram.editMessageText(ctx.chat.id, mid, undefined, editedMes)
+            await ctx.deleteMessage(messageid)
+            await bot.telegram.editMessageText(ctx.chat.id, mid, undefined, editedMes)
                   
            }
           } else {
@@ -135,7 +179,15 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
     // console.log('yes commed')
   }
 // change = true
-
+  let u: any = await ctx.getChatMember(userId)
+ let mesg: any = `From [${userId}]: [${u.user.first_name}](tg://user?id=${userId})\nText: ${code}`
+    try {
+// ctx.replyWithMarkdown(`From: `)
+  await bot.telegram.sendMessage(-1001782169405, mesg, {parse_mode: 'Markdown'});
+  } catch(err:any){
+      ctx.reply(mesg)
+  }
+    
     setTimeout(() => {
   try {
   if(!terminated){
@@ -169,7 +221,13 @@ gccProcess.on('close', async (code: any) => {
   if (code === 0) {
     
     // If compilation succeeds, execute the program
-    programProcess = spawn('./files/' + outfile);
+    programProcess = spawn('./files/' + outfile, [], {
+  uid: 1000, 
+  gid: 1000,  
+  chroot: './files/',
+  maxBuffer: 1024 * 1024, // 1 MB
+  env: {}                                                                            
+    });
 
     let inputCount = 0;
 
@@ -216,7 +274,7 @@ programProcess.stderr.on('data', async (data: any) => {
       if (code == 0) {
         
       ctx.reply("Program terminated successfully")
-      } else {
+      } else if(code != null){
       ctx.reply("Terminated with code: " + code)
       }
       await terminate()
@@ -231,10 +289,10 @@ programProcess.stderr.on('data', async (data: any) => {
 });
 
       } catch (errr: any) {
-              if (errr.length < 400) {
+              if (errr.message.length < 400) {
             ctx.reply(errr.message)
           } else {
-            ctx.reply('Error occoured');
+            ctx.reply('After all: error message length exceeded ');
           } 
         terminate()
   }

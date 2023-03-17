@@ -1,5 +1,7 @@
 { pkgs }: {
     deps = [
+        pkgs.nixStatic
+        pkgs.nixStatic
         pkgs.killall
         pkgs.lsof
         pkgs.python39
