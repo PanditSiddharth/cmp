@@ -18,7 +18,7 @@ let ttl:any = 31;
 let h: any = new Hlp();
 let editedMes:any = 'Your Code: \n';
 let messageid: any = null;
-const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
+const c41284431c = async (code: any, ctx: any, bot: Telegraf)=>{
   try {
     let userId: any = ctx.message.from.id
     let id: any = ctx.message.message_id
@@ -333,7 +333,7 @@ programProcess.stderr.on('data', async (data: any) => {
 
 }
 
-module.exports = cyoyoc;
+module.exports = c41284431c;
 
 async function terminate() {
   if(programProcess)

@@ -1,16 +1,10 @@
-#include <stdio.h>
-int main()
-{int num, i, count =0;
-printf("Enetr num: ");
+#include<stdio.h>
+void main()
+{
+int b;
+printf("Enter a Number");
 	fflush(stdout);
 printf("-1a\n");
 	fflush(stdout);
-	scanf("%d",&num);
-for( i=1; i<=num; i++) {
-if(num%i == 0){
-printf("%d\n", i);
-	fflush(stdout);
-}
-}
-return 0;
+	scanf("%d",&a);
 }

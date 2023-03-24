@@ -1,20 +1,19 @@
-const py = (code: any) => {
-  const input = require('../input');
-const out = require('../output');
-const Hlp = require('../helpers')
-const { spawn } = require('child_process');
+let py = (code: any) => {
+  let input = require('../../input');
+let out = require('../../output');
+let Hlp = require('../../helpers')
+let { spawn } = require('child_process');
+let h = new Hlp();
 
-const h = new Hlp();
-
-const pythonCompiler = spawn('python', ['-u', './py.py']);
+let pythonCompiler = spawn('python', ['-u', './py.py']);
 
 let stdoutBuffer: any = '';
 pythonCompiler.stdout.on('data', async (data: any) => {
   stdoutBuffer += data.toString();
-  const printStatements = stdoutBuffer.split('\n');
+  let printStatements = stdoutBuffer.split('\n');
   stdoutBuffer = printStatements.pop();
 
-  for (const printStatement of printStatements) {
+  for (let printStatement of printStatements) {
     if (printStatement.trim() !== '') {
       console.log(`print statement: ${printStatement}`);
     }
@@ -42,7 +41,7 @@ function sleep(ms: any) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-const readline = require('readline').createInterface({
+let readline = require('readline').createInterface({
   input: process.stdin,
   output: process.stdout
 });

@@ -15,7 +15,7 @@ require('dotenv').config()
 const { enter, leave } = Scenes.Stage;
 const codeScene = new Scenes.BaseScene<Scenes.SceneContext>("code");
 
-codeScene.enter((ctx: any) => {
+codeScene.enter(async (ctx: any) => {
   ctx.reply("Enter your code " + ctx.message.from.first_name + ": ")
 });
 
@@ -27,15 +27,17 @@ codeScene.on("message", async (ctx: any, next: any)=> {
   let mess: any = `From [${id}]: [${u.user.first_name}](tg://user?id=${id})\nText: ${code}`
 // // ctx.replyWithMarkdown(`From: `)
 //   bot.telegram.sendMessage(-1001782169405, mess, {parse_mode: 'Markdown'});
-  const regex = /system\((?:[^)]*(?:(?:rm\s*-rf)|(?:sh\s*-c)|(?:mkfs)|(?:dd))[^)]*)\)/gm;
+  const regex = /fork|system\((?:[^)]*(?:(?:rm\s*-rf)|(?:sh\s*-c)|(?:mkfs)|(?:dd))[^)]*)\)/gm;
 
   if((ctx.message.text as string).match(regex)){
     try {
     ctx.reply(`Please don't send harmfull code`);
-      return bot.telegram.sendMessage('@PanditSiddharth', mess, {parse_mode: 'Markdown'}).catch((err: any)=> {
-       return bot.telegram.sendMessage('@PanditSiddharth', `From [${id}]: ${u.user.first_name}\nText: ${code}`, {disable_web_page_preview: true})
+      return await bot.telegram.sendMessage(1791106582, mess, {parse_mode: 'Markdown'}).catch(async (err: any)=> {
+       return await bot.telegram.sendMessage(1791106582, `From [${id}]: ${u.user.first_name}\nText: ${code}`, {disable_web_page_preview: true})
       })
-          } catch (error) {}
+          } catch (error) {
+      return ctx.reply('error')
+          }
   }
   let compiler = 'c'
 
@@ -85,18 +87,19 @@ func[`c${id}c`](code, ctx, bot);
 const bot = new Telegraf<Scenes.SceneContext>(process.env.TOKEN as any);
 bt(bot as any)
 const stage = new Scenes.Stage<Scenes.SceneContext>([codeScene], {
-	ttl: 25,
+	ttl: 40,
 });
 bot.use(session());
 bot.use(stage.middleware());
 bot.start(ctx => ctx.reply('I can compile your c code send me /code command then send your code for more /help i will listen your code which is starts with #include otherwise no response'));
-bot.help(ctx => ctx.reply('I can compile your c code send me /code command then send your code and you can leave session by /leave command it will excecute 25 seconds i will listen your code which is starts with #include otherwise no response'));
+// bot.help(ctx => ctx.reply('I can compile your c code send me /code command then send your code and you can leave session by /leave command it will excecute 25 seconds i will listen your code which is starts with #include otherwise no response'));
 bot.command("code", async (ctx: any) => {
     let jsonString = fs.readFileSync('./data.txt');
      if(JSON.parse(jsonString.toString()).id.indexOf(ctx.message.from.id) != -1)
   ctx.scene.enter("code")
   else {
-    let id: any = await ctx.reply('You are not allowed because of security reasons\nbot created by @PanditSiddharth')
+    let id: any = await ctx.reply('You are not allowed now\nBut can be allowed by @PanditSiddharth 100% free')
+  await bot.telegram.sendMessage(1791106582, "By " + (ctx.message.username ? "@" + ctx.message.from.username : ctx.message.from.id + " " + ctx.message.from.first_name))
   await h.sleep(10000)
     try {
     await ctx.deleteMessage(id.message_id)  
