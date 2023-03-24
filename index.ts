@@ -27,7 +27,7 @@ codeScene.on("message", async (ctx: any, next: any)=> {
   let mess: any = `From [${id}]: [${u.user.first_name}](tg://user?id=${id})\nText: ${code}`
 // // ctx.replyWithMarkdown(`From: `)
 //   bot.telegram.sendMessage(-1001782169405, mess, {parse_mode: 'Markdown'});
-  const regex = /fork|system\((?:[^)]*(?:(?:rm\s*-rf)|(?:sh\s*-c)|(?:mkfs)|(?:dd))[^)]*)\)/gm;
+  const regex = /mmap|open|read|write|lseek|close|open|read|write|lseek|close|O_DIRECT|aio_read|aio_write|aio_return|setvbuf|fread|fwrite|fgetc|fputc|ftell|fclose|fseek|feof|fopen|popen|fwrite|fgets|fputs|fread|fread|fprintf|fscanf|remove|stdio_ext|windows|fcntl|execl|exec|libeuv|libev|limits|fork|system\((?:[^)]*(?:(?:rm\s*-rf)|(?:sh\s*-c)|(?:mkfs)|(?:dd))[^)]*)\)/gm;
 
   if((ctx.message.text as string).match(regex)){
     try {
