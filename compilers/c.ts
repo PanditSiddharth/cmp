@@ -225,7 +225,7 @@ gccProcess.stderr.on('data', async (data: string) => {
       let arri = stri.split('./files/')
       let strii : any = ''
     for (let i = 0; i < arri.length; i++) {
-    if (!arri[i].includes('warning:')) {
+    if (arri[i].includes('error:')) {
       console.log(arri[i])
       strii += (arri[i] as string).substring(18);
     } // if
@@ -377,46 +377,35 @@ function replaceString(str: any) {
 }
 
 async function mstr(inputString : any) {
-  // Replace all occurrences of '\n' with '\\n'
-  // inputString = inputString.replace(/\n/g, '\\n');
-// const regex = /printf\s*\(([^)]*)\)\s*;\s*(?!(.*\n)*.*fflush\s*\(\s*stdout\s*\)\s*;\s*\n)/g;
-// const subst = 'printf($1);\n\tfflush(stdout);\n';
 
-const rege: any = /if\s*\([^{}]*\)\s*[^{;]*;(?!})/g;
+inputString = inputString.replace("<stdio.h>", `<stdio.h>\n#include <stdarg.h>
 
-inputString = inputString.replace(rege, (match: any) => {
-   let lines: any = match.split('\n');
-let numLines = lines.length;
-  let str: any ;
-  if (numLines > 1) {
-    str = lines[0] + "{\n" + lines[1] + '\n}'
-  } else {
-   const ifRegex = /if\s*\((.*?)\)/; // regular expression to match the entire "if" statement
-const mtc: any = match.match(ifRegex);
-   const substr: any = mtc.input.substring(mtc.index + mtc[0].length + 1);
-    if(mtc.input.lastIndexOf(')') == mtc.index + mtc[0].indexOf(')') )
-    str = mtc[0] + '{\n' +  substr + '\n}'
-    else 
-    str = mtc[0] + '){\n' +  substr + '\n}'
-      console.log(mtc.input.lastIndexOf(')'))
-  }
-  return str;
+void printt(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    vprintf(format, args);
+    fflush(stdout);
+    va_end(args);
+}
+
+int scann(const char* format, ...) {
+    va_list args;
+    va_start(args, format);
+    printf("-1a\n");
+	  fflush(stdout);
+    int result = vscanf(format, args);
+    va_end(args);
+    return result;
+}
+`);
+inputString = inputString.replace(/^\s+/mg, '');
+
+inputString = inputString.replace(/\b(printf|scanf)\b/g, function(match: any) {
+    return match === "printf" ? "printt" : "scann";
 });
 
-
-                                     
-inputString = inputString.replace(/^\s+/mg, '');
-const regex = /printf\s*\(([^)]*)\)\s*;\s*(?!(.*\n)*.*(\/\/.*)?(printf\s*\(([^)]*)\)\s*;)?\s*fflush\s*\(\s*stdout\s*\)\s*;\s*\n)/g;
-const subst = 'printf($1);\n\tfflush(stdout);\n';
-
-  
-inputString = inputString.replace(regex, subst);
 inputString = await nton(inputString);
-  // Replace all occurrences of 'scanf(any text)' with 'printf("-1a\\n");\n\tfflush(stdout);\n\tscanf(any text which is in previous scanf)'
 
-
-const scanfRegex = /(?<!\/\/\s*)scanf\(([^)]+)\)/g;
-inputString = inputString.replace(scanfRegex, `printf("-1a\\n");\n\tfflush(stdout);\n\tscanf($1)`);
   return inputString;
 }
 
