@@ -1,7 +1,7 @@
 const fs = require('fs');
 import Hlp from '../helpers'
 import {Telegraf} from "telegraf"
-
+// import { constants } from 'signal';
 const { spawn } = require('child_process');
 let change = false;
 let mid = 0;
@@ -158,6 +158,9 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
 
         const outputString = uniquePhrases.join(' ');
             ctx.reply('Output: max length 500 letters exceeded check your code for any errors \n' + outputString);
+            const SIGKILL = "SIGKILL"
+            if(programProcess)
+              programProcess.kill(SIGKILL);
             terminate()
           } 
             } catch (error: any) {
@@ -222,7 +225,7 @@ gccProcess.stderr.on('data', async (data: string) => {
       let arri = stri.split('./files/')
       let strii : any = ''
     for (let i = 0; i < arri.length; i++) {
-    if (arri[i].includes('error:')) {
+    if (!arri[i].includes('warning:')) {
       console.log(arri[i])
       strii += (arri[i] as string).substring(18);
     } // if
@@ -330,7 +333,6 @@ programProcess.stderr.on('data', async (data: any) => {
         console.log('299 terminated because error')
         terminate()
   }
-
 }
 
 module.exports = cyoyoc;
