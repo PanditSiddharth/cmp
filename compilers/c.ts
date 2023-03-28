@@ -23,16 +23,16 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
   let userId: any = ctx.message.from.id
   let id: any;
   ttl = ctx.scene.options.ttl
-  mess = code + "\n"
+  mess = ctx.message.text + "\n"
   if(ctx.message.reply_to_message){
-  messageid = ctx.message.reply_to_message.message_id
-  id = messageid
-  console.log("id " + id)
+  id = ctx.message.reply_to_message.message_id
   }
   else{
-  messageid = ctx.message.message_id
-  id = messageid
+  id = ctx.message.message_id
   }
+
+  messageid = ctx.message.message_id
+    
 
   if(ctx.message.text.startsWith('/code')){
     if (!ctx.message.reply_to_message){
@@ -43,7 +43,7 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
     loopterminator = false
     let mmm = await ctx.reply('Please wait...')
     await terminate(false)
-    // return console.log(mmm)
+
     ctx.deleteMessage(mmm.message_id)
     }
   }
@@ -54,13 +54,13 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
   }
     
 
-    // console.log(ctx)
+
    ok = true
   async function outfunc (data:  any) {
       let dat = data.toString()
       await console.log("58stdout " + data.toString());
     
-      if (dat.includes('-1a\n')) {
+      if (("" + dat).includes('-1a\n')) {
           let str = dat.replace(/-1a\n/g, "");
             if(str != ""){
                 if(mid == 0){
@@ -81,30 +81,31 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
                   
                   }
                   mid = mmid.message_id
-                  console.log('82: mid assign: ' + mid)
+                 
                } else {
             editedMes = editedMes + str
            
             ctx.deleteMessage(messageid).catch(()=>{})
-            await bot.telegram.editMessageText(ctx.chat.id, mid, undefined, editedMes, { disable_web_page_preview: true})
+            await bot.telegram.editMessageText(ctx.chat.id, mid, undefined, editedMes, { disable_web_page_preview: true}).catch(()=> {})
                   
                }
             } else {
              await bot.telegram.editMessageText(ctx.chat.id, mid, undefined, editedMes, { disable_web_page_preview: true})
+              .catch(()=> {})
             }
 
         try {
         for (let i = 0; i < ttl * 10 ; i++) {
           await h.sleep(100)
-            // console.log('running ' + i)
+
           if (loopterminator) {            
             loopterminator = false
-            console.log('93:loop terminating ' + i)
+            
             await terminate()            
             break;
           }
           if(change && ok){
-            console.log('yes')
+         
             ok = false
             ctx.deleteMessage(messageid).catch(()=>{})
           await programProcess.stdin.write(mess + '\n') 
@@ -113,7 +114,7 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
           }
         }
          } catch (error: any) {
-          console.log('Error in for loop: ' + error.message)
+       
           if (error.message.length < 400) {
             ctx.reply(error.message)
           } else {
@@ -148,8 +149,8 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
                   mid = mmid.message_id
            } else {
             editedMes = editedMes + dat
-             console.log(mid)
-            console.log(messageid)
+         
+         
             await bot.telegram.editMessageText(ctx.chat.id, mid, undefined, editedMes, { disable_web_page_preview: true})
 
              // ctx.reply(editedMes)
@@ -160,7 +161,7 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
          const uniquePhrases = [...new Set(phrases)];
 
         const outputString = uniquePhrases.join(' ');
-            ctx.reply('Output: max length 600 letters exceeded check your code for any errors \n' + outputString);
+            ctx.reply('Output: max length 500 letters exceeded check your code for any errors \n' + outputString).catch(()=>{})
             const SIGKILL = "SIGKILL"
             if(programProcess)
               programProcess.kill(SIGKILL);
@@ -178,15 +179,14 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
 
     if(change){
     myEmitter.emit('ctx', ctx)
-    // console.log(typeof(code))
+ 
   }
   change = true
   
-  if(!code.includes('#include')){
-    console.log('Inputs entered..')
+  if(!("" + code).includes('#include')){
     return
   } else {
-    // console.log('yes commed')
+  
   }
 // change = true
     editedMes = `By ${ctx.message.from.first_name}: \n`
@@ -217,7 +217,6 @@ let cod = await mstr(code);
   let outfile = filename.replace(".c", "");
 fs.writeFileSync('./files/' + filename, cod, {flag: 'w'}, (err: any) => {
   if (err) throw err;
-  console.log(`C code written to ${filename}`);
 });
 
 gccProcess = spawn('gcc', ['-o', './files/' + outfile, './files/' + filename, '-lm'], {stdio: ['pipe', 'inherit']});
@@ -229,8 +228,8 @@ gccProcess.stderr.on('data', async (data: string) => {
       let arri = stri.split('./files/')
       let strii : any = ''
     for (let i = 0; i < arri.length; i++) {
-    if (arri[i].includes('error:')) {
-      console.log(arri[i])
+    if (("" + arri[i]).includes('error:')) {
+      
       strii += (arri[i] as string).substring(18);
     } // if
     } // for loop
@@ -245,7 +244,7 @@ gccProcess.stderr.on('data', async (data: string) => {
       if(strii.length > 20)
         terminate()
   } catch (error) {
-    console.log(error)
+
   }
   // await terminate()
 })
@@ -283,12 +282,12 @@ programProcess.stderr.on('data', async (data: any) => {
 
     programProcess.on('close', async (code : any) => {
       try {
-      console.log('program process closed');  
+  
         
       // programProcess.stdin.end();
       await terminate()
            } catch (error) {
-      console.log('program process closing');  
+    
         
       await terminate()
       }
@@ -306,9 +305,8 @@ programProcess.stderr.on('data', async (data: any) => {
     });
 
     programProcess.on('exit', async (code: any, s: any)=> {
-      // console.log(code)
-       // process.exit();
-      console.log('275 program process exit ' + s);
+
+  
       if (code == 0) {
       await h.sleep(200)
       ctx.reply("Program terminated successfully")
@@ -319,8 +317,17 @@ programProcess.stderr.on('data', async (data: any) => {
         
       } else if(code != null){
       ctx.reply("Terminated with code: " + code)
+.then(async (dl: any)=> {
+      await h.sleep(10000)
+ctx.deleteMessage(dl.message_id).catch((er: any)=> {})
+      })
+        
       } else {
         ctx.reply('Program terminated: ' + s)
+        .then(async (dl: any)=> {
+      await h.sleep(10000)
+ctx.deleteMessage(dl.message_id).catch((er: any)=> {})
+      })
       }
       await terminate()
     })
@@ -339,7 +346,7 @@ programProcess.stderr.on('data', async (data: any) => {
           } else {
             ctx.reply('After all: error message length exceeded ');
           } 
-        console.log('299 terminated because error')
+
         terminate()
   }
 }
@@ -368,7 +375,7 @@ mess = null
 loopterminator = true
     
   terminated = true
-console.log('328 program terminated')
+
   return true
 }
 
@@ -432,7 +439,7 @@ async function handleCFileAdded() {
   } else {
 
     let file: any = fs.openSync('./files/cfile' + Math.floor(Date.now()/100000000000) + '.c', 'w');
-    console.log(file)
+ 
     // file.close()
     return 'itsC.c'
   }
