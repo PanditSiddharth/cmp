@@ -62,7 +62,7 @@ ctx.reply(`Commands in this bot
 /auth For giving access to user so user can excecute his/her codes
 /unauth remove access
 /auths to see auth users list
-/code to excecute your codes in bot ttl: 30 seconds or recreate session 
+/code to excecute your codes in bot ttl: 40 seconds or recreate session 
 /leave to leave session (if you not want excecute your code)
 /help to see this list again
 

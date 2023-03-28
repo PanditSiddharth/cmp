@@ -17,11 +17,23 @@ va_end(args);
 return result;
 }
 int main() {
-int num = 5; // change this to the number whose factorial you want to find
-int fact = 1;
-for (int i = 1; i <= num; i++) {
-fact *= i;
+int arr[100], n, search, i;
+printt("Enter the number of elements in the array: ");
+scann("%d", &n);
+printt("Enter the elements of the array: ");
+for (i = 0; i < n; i++) {
+scann("%d", &arr[i]);
 }
-printt("The factorial of %d is %d", num, fact);
+printt("Enter the element to search: ");
+scann("%d", &search);
+for (i = 0; i < n; i++) {
+if (arr[i] == search) {
+printt("%d found at position %d.\n", search, i + 1);
+break;
+}
+}
+if (i == n) {
+printt("%d not found in the array.\n", search);
+}i
 return 0;
 }

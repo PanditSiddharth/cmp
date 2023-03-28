@@ -16,75 +16,88 @@ const myEmitter = new EventEmitter();
 let ok = false
 let ttl:any = 31;
 let h: any = new Hlp();
-let editedMes:any = 'Your Code: \n';
+let editedMes:any = '';
 let messageid: any = null;
 const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
   try {
-    let userId: any = ctx.message.from.id
-    let id: any = ctx.message.message_id
+  let userId: any = ctx.message.from.id
+  let id: any;
+  ttl = ctx.scene.options.ttl
+  mess = code + "\n"
+  if(ctx.message.reply_to_message){
+  messageid = ctx.message.reply_to_message.message_id
+  id = messageid
+  console.log("id " + id)
+  }
+  else{
+  messageid = ctx.message.message_id
+  id = messageid
+  }
+
+  if(ctx.message.text.startsWith('/code')){
+    if (!ctx.message.reply_to_message){
+    loopterminator = false
+    return await terminate(false)
+    }
+    else{
+    loopterminator = false
+    let mmm = await ctx.reply('Please wait...')
+    await terminate(false)
+    // return console.log(mmm)
+    ctx.deleteMessage(mmm.message_id)
+    }
+  }
     
-  if(ctx.message.text.startsWith('/leave') || ctx.message.text.startsWith('/code')){
+  if(ctx.message.text.startsWith('/leave')){
     ctx.scene.leave()
     return await terminate()
   }
-  ttl = ctx.scene.options.ttl
-  mess = ctx.message.text + "\n"
-  messageid = ctx.message.message_id
+    
+
     // console.log(ctx)
    ok = true
   async function outfunc (data:  any) {
       let dat = data.toString()
-      await console.log("41stdout " + data.toString());
+      await console.log("58stdout " + data.toString());
     
       if (dat.includes('-1a\n')) {
           let str = dat.replace(/-1a\n/g, "");
             if(str != ""){
                 if(mid == 0){
                   let mmid: any;
-                  
-                  // console.log(ctx.message)
-                  if (code.length < 350) {
-             ctx.deleteMessage().catch((err:any)=> {console.log("51 delete" + err)})
-              editedMes = editedMes + mess + '\n\nOutput:\n' + str
-                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
               
-                  } 
-                  else {
                   if (ctx.chat.type == 'private') {
-              editedMes = editedMes + `tg://openmessage?user_id=${ctx.chat.id}&message_id=${id}` + '\n\nOutput:\n' + str
-                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+              editedMes = 'Output:\n' + str
+                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true, reply_to_message_id: id}) 
                   
                   } 
                   else if(ctx.chat.type == "supergroup" && ctx.chat.username){
-                    editedMes = editedMes + `https://t.me/${ctx.chat.username}/${id}` + '\n\nOutput:\n' + str
-                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
-                  } 
-                  else {
-                      editedMes = editedMes + `https://t.me/c/${ctx.chat.id}/${id}` + '\n\nOutput:\n' + str
-                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+    editedMes = editedMes + `https://t.me/${ctx.chat.username}/${id}` + '\n\nOutput:\n' + str
+        mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+        } 
+    else {
+     editedMes = editedMes + `https://t.me/c/${ctx.chat.id}/${id}` + '\n\nOutput:\n' + str
+  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
                   
                   }
-                    
-                  } // if length big
                   mid = mmid.message_id
-                  console.log('74: mid assign: ' + mid)
+                  console.log('82: mid assign: ' + mid)
                } else {
             editedMes = editedMes + str
-                console.log(messageid + 77)
-            console.log('78 deleted ' + await ctx.deleteMessage(messageid))
+           
+            ctx.deleteMessage(messageid).catch(()=>{})
             await bot.telegram.editMessageText(ctx.chat.id, mid, undefined, editedMes, { disable_web_page_preview: true})
                   
                }
+            } else {
+             await bot.telegram.editMessageText(ctx.chat.id, mid, undefined, editedMes, { disable_web_page_preview: true})
             }
-        // myEmitter.on("ctx", async (ctx: any) => {
-          // console.log(ctx.message)
+
         try {
         for (let i = 0; i < ttl * 10 ; i++) {
           await h.sleep(100)
             // console.log('running ' + i)
-          if (loopterminator) {
-          // console.log(gccProcess.kill())
-            
+          if (loopterminator) {            
             loopterminator = false
             console.log('93:loop terminating ' + i)
             await terminate()            
@@ -93,6 +106,7 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
           if(change && ok){
             console.log('yes')
             ok = false
+            ctx.deleteMessage(messageid).catch(()=>{})
           await programProcess.stdin.write(mess + '\n') 
             editedMes = editedMes + mess
             break;
@@ -114,41 +128,30 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
            // if(mid == 0){
         if (dat.length < 500) {
            if(mid == 0){
-                  let mmid: any;
-                  // await h.sleep(1000)
-                  // console.log(ctx.message)
-                  if (code.length < 350) {
-             ctx.deleteMessage().catch((err: any) => {
-               console.log('136: deletion error' + err)
-             })
-              editedMes = editedMes + mess + '\n\nOutput:\n' + dat
-                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
-              
-                  } else {
+                  let mmid: any;             
+                  
                   if (ctx.chat.type == 'private') {
-              editedMes = editedMes + `tg://openmessage?user_id=${ctx.chat.id.replace('-100', '')}&message_id=${id}` + '\n\nOutput:\n' + dat
-                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
+                    ctx.deleteMessage().catch(()=> {})
+              editedMes = `Output:\n` + dat
+                  mmid = await ctx.reply(editedMes, { disable_web_page_preview: true, reply_to_message_id: id}) 
                   
                   } else if(ctx.chat.type == "supergroup" && ctx.chat.username){
-                    editedMes = editedMes + `https://t.me/${ctx.chat.username}/${id}` + '\n\nOutput:\n' + dat
+                    editedMes = editedMes + `https://t.me/${ctx.chat.username}/${id}` + `\n\nOutput :\n` + dat
                   mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
                   
                   } else {
-                      editedMes = editedMes + `https://t.me/c/${ctx.chat.id}/${id}` + '\n\nOutput:\n' + dat
+                      editedMes = editedMes + `https://t.me/c/${("" + ctx.chat.id).replace('-100', '')}/${id}` + '\n\nOutput:\n' + dat
                   mmid = await ctx.reply(editedMes, { disable_web_page_preview: true}) 
                   
                   }
                     
-                  } // if not length big
                   mid = mmid.message_id
            } else {
             editedMes = editedMes + dat
              console.log(mid)
             console.log(messageid)
             await bot.telegram.editMessageText(ctx.chat.id, mid, undefined, editedMes, { disable_web_page_preview: true})
-            ctx.deleteMessage(messageid).catch((err: any)=> {
-              console.log('162 delete ' + err)
-            })
+
              // ctx.reply(editedMes)
                   
            }
@@ -180,12 +183,13 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
   change = true
   
   if(!code.includes('#include')){
-    console.log('yoooooooooooo')
+    console.log('Inputs entered..')
     return
   } else {
     // console.log('yes commed')
   }
 // change = true
+    editedMes = `By ${ctx.message.from.first_name}: \n`
   let u: any = await ctx.getChatMember(userId)
  let mesg: any = `From [${userId}]: [${u.user.first_name}](tg://user?id=${userId})\nText: ${code}`
     try {
@@ -197,8 +201,8 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
     
     setTimeout( () => {
   try {
-  if(!terminated){
-    terminated = false
+  if(programProcess){
+    // terminated = false
   ctx.sendMessage('Excecution time up')
   }
   terminate()
@@ -306,8 +310,13 @@ programProcess.stderr.on('data', async (data: any) => {
        // process.exit();
       console.log('275 program process exit ' + s);
       if (code == 0) {
-        
+      await h.sleep(200)
       ctx.reply("Program terminated successfully")
+      .then(async (dl: any)=> {
+      await h.sleep(10000)
+        ctx.deleteMessage(dl.message_id).catch((er: any)=> {})
+      })
+        
       } else if(code != null){
       ctx.reply("Terminated with code: " + code)
       } else {
@@ -337,10 +346,10 @@ programProcess.stderr.on('data', async (data: any) => {
 
 module.exports = cyoyoc;
 
-async function terminate() {
+async function terminate(loop = true) {
   if(programProcess)
  programProcess.removeAllListeners();
-await h.sleep(3000)
+await h.sleep(300)
 ok = false
 editedMes = 'Your Code: \n';
 messageid = 0;
@@ -355,25 +364,12 @@ programProcess = null;
   }
 }
 mess = null
+  if(loop)
 loopterminator = true
+    
   terminated = true
 console.log('328 program terminated')
-h.sleep(2000)
-.then(()=>{
-loopterminator = false;
-  // // terminated = false
-})
-// gccProcess.removeAllListeners();
-// programProcess.removeAllListeners()
   return true
-}
-
-function replaceString(str: any) {
-  if (str.includes('-1a\n')) {
-    str = str.replace(/-1a\n/g, "yo");
-    return str;
-  }
-  return false;
 }
 
 async function mstr(inputString : any) {
