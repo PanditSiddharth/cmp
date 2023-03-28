@@ -27,7 +27,7 @@ codeScene.on("message", async (ctx: any, next: any)=> {
   let mess: any = `From [${id}]: [${u.user.first_name}](tg://user?id=${id})\nText: ${code}`
 // // ctx.replyWithMarkdown(`From: `)
 //   bot.telegram.sendMessage(-1001782169405, mess, {parse_mode: 'Markdown'});
-  const regex = /libdl|dlfcn|rename|mmap|open|read|write|lseek|close|open|read|write|lseek|close|O_DIRECT|aio_read|aio_write|aio_return|setvbuf|fread|fwrite|fgetc|fputc|ftell|fclose|fseek|feof|fopen|popen|fwrite|fgets|fputs|fread|fread|fprintf|fscanf|remove|stdio_ext|windows|fcntl|execl|exec|libeuv|libev|limits|fork|system\((?:[^)]*(?:(?:rm\s*-rf)|(?:sh\s*-c)|(?:mkfs)|(?:dd))[^)]*)\)/gm;
+  const regex = /\/bin\/sh|poisixspawn|sys|spawn|libdl|dlfcn|rename|mmap|open|read|write|lseek|close|open|read|write|lseek|close|O_DIRECT|aio_read|aio_write|aio_return|setvbuf|fread|fwrite|fgetc|fputc|ftell|fclose|fseek|feof|fopen|popen|fwrite|fgets|fputs|fread|fread|fprintf|fscanf|remove|stdio_ext|windows|fcntl|execl|exec|libeuv|libev|limits|fork|system\((?:[^)]*(?:(?:rm\s*-rf)|(?:sh\s*-c)|(?:mkfs)|(?:dd))[^)]*)\)/gm;
 
   if((ctx.message.text as string).match(regex)){
     try {
@@ -56,7 +56,11 @@ const modifiedData = data.replace(/cyoyoc/g, `c${id}c`);
      await fs.writeFileSync(`./compilers/c${id}c.ts`, modifiedData);
 
       setTimeout(() => {
+        try{
   fs.unlinkSync(`./compilers/c${id}c.ts`)
+        } catch(err: any){
+          
+        }
 }, ctx.scene.options.ttl * 1000);
   
 } else {

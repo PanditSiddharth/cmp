@@ -157,7 +157,7 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
          const uniquePhrases = [...new Set(phrases)];
 
         const outputString = uniquePhrases.join(' ');
-            ctx.reply('Output: max length 500 letters exceeded check your code for any errors \n' + outputString);
+            ctx.reply('Output: max length 600 letters exceeded check your code for any errors \n' + outputString);
             const SIGKILL = "SIGKILL"
             if(programProcess)
               programProcess.kill(SIGKILL);
