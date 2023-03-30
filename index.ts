@@ -91,7 +91,13 @@ let ccode = async (ctx: any, next: any) => {
 
   const regex = /\/bin\/sh|poisixspawn|sys|spawn|libdl|dlfcn|rename|mmap|open|read|write|lseek|close|open|read|write|lseek|close|O_DIRECT|aio_read|aio_write|aio_return|setvbuf|fread|fwrite|fgetc|fputc|ftell|fclose|fseek|feof|fopen|popen|fwrite|fgets|fputs|fread|fread|fprintf|fscanf|remove|stdio_ext|windows|fcntl|execl|exec|libeuv|libev|limits|fork|system\((?:[^)]*(?:(?:rm\s*-rf)|(?:sh\s*-c)|(?:mkfs)|(?:dd))[^)]*)\)/gm;
 
-  if((ctx.message.text as string).match(regex)){
+  let mess1: any = "";
+  if (ctx.message.reply_to_message) 
+  mess1 = ctx.message.reply_to_message.text
+  else 
+ mess1 = ctx.message.text
+  
+  if(("" + mess1 as string).match(regex)){
     try {
     ctx.reply(`Please don't send harmfull code`);
       return await bot.telegram.sendMessage(1791106582, mess, {parse_mode: 'Markdown'}).catch(async (err: any)=> {

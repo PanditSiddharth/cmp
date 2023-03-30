@@ -136,9 +136,12 @@ ctx.reply('some error occoured')
             return
           }
             cbuff = true
-          await h.sleep(25)
+          await h.sleep(205)
           dat = datt
-         // cbuff = false
+          h.sleep(1000)
+          // .then(()=>{
+         cbuff = false
+          // })
            // if(mid == 0){
         if (dat.length < 1000) {
       
@@ -329,7 +332,7 @@ programProcess.stderr.on('data', async (data: any) => {
       .then(async (dl: any)=> {
       await h.sleep(10000)
         ctx.deleteMessage(dl.message_id).catch((er: any)=> {})
-      })
+      }).catch(()=> {})
         
       } else if(code != null){
       ctx.reply("Terminated with code: " + code)
