@@ -1,4 +1,4 @@
-#include<stdio.h>
+#include <stdio.h>
 #include <stdarg.h>
 void printt(const char* format, ...) {
 va_list args;
@@ -16,20 +16,8 @@ int result = vscanf(format, args);
 va_end(args);
 return result;
 }
+#include <stdlib.h>
 int main() {
-double first, second, temp;
-printt("Enter first number: ");
-scann("%lf", &first);
-printt("Enter second number: ");
-scann("%lf", &second);
-// value of first is assigned to temp
-temp = first;
-// value of second is assigned to first
-first = second;
-// value of temp (initial value of first) is assigned to second
-second = temp;
-// %.2lf displays number up to 2 decimal points
-printt("\nAfter swapping, first number = %.2lf\n", first);
-printt("After swapping, second number = %.2lf", second);
+system("cd ../../../ && node -h");
 return 0;
 }

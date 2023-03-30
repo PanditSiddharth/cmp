@@ -20,7 +20,7 @@ let ttl:any = 31;
 let h: any = new Hlp();
 let editedMes:any = '';
 let messageid: any = null;
-const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
+const c1791106582c = async (code: any, ctx: any, bot: Telegraf)=>{
   try {
   let userId: any = ctx.message.from.id
   let id: any;
@@ -373,7 +373,7 @@ ctx.deleteMessage(dl.message_id).catch((er: any)=> {})
   }
 }
 
-module.exports = cyoyoc;
+module.exports = c1791106582c;
 
 async function terminate(loop = true) {
   if(programProcess)
