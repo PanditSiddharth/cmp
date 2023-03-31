@@ -53,8 +53,11 @@ for more enter /help Join @LogicBots for new bots and updates`
 ));
 // bot.help(ctx => ctx.reply('I can compile your c code send me /code command then send your code and you can leave session by /leave command it will excecute 25 seconds i will listen your code which is starts with #include otherwise no response'));
 bot.command("code", async (ctx: any) => {
-    let jsonString = fs.readFileSync('./data.txt');
-     if(JSON.parse(jsonString.toString()).id.indexOf(ctx.message.from.id) != -1)
+    let jsonString = fs.readFileSync('./dt.txt', 'utf8');
+  // console.log(JSON.parse(jsonString))
+     const idList: any = JSON.parse(jsonString).map((item: any) => {return item.id});
+  // console.log(idList)
+  if(idList.indexOf(ctx.message.from.id) != -1)
   ctx.scene.enter("code")
   else {
     let id: any = await ctx.reply('You are not allowed now\nBut can be allowed by @PanditSiddharth 100% free')

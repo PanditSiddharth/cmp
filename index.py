@@ -1,2 +1,2 @@
-print('Hii')
-print('LoL')
+print('Hello lolz')
+print('Running python')
