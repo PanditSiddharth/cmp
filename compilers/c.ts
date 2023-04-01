@@ -44,7 +44,7 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
     else{
     loopterminator = false
     let mmm = await ctx.reply('Please wait...').catch(()=>{})
- terminate(false)
+ await terminate(false)
 
     ctx.deleteMessage(mmm.message_id).catch(()=>{})
     }
@@ -136,11 +136,12 @@ ctx.reply('some error occoured')
             return
           }
             cbuff = true
-          await h.sleep(205)
+          await h.sleep(25)
           dat = datt
-          h.sleep(1000)
+          cbuff = false
+          datt = "";
           // .then(()=>{
-         cbuff = false
+         
           // })
            // if(mid == 0){
         if (dat.length < 1000) {

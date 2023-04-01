@@ -16,13 +16,11 @@ int result = vscanf(format, args);
 va_end(args);
 return result;
 }
+#include <stdlib.h>
 int main(){
-int number1, number2, sum;
-printt("Enter two integers: ");
-scann("%d", &number1);
-scann("%d", &number2);
-// calculate the sum
-sum = number1 + number2;
-printt("%d + %d = %d", number1, number2, sum);
+for (int i = 0; i < 6; i++) {
+printt("%s", "yo");
+usleep(1000000);
+}
 return 0;
 }

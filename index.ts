@@ -92,7 +92,8 @@ let ccode = async (ctx: any, next: any) => {
   let u: any = await ctx.getChatMember(id)
   let mess: any = `From [${id}]: [${u.user.first_name}](tg://user?id=${id})\nText: ${code}`
 
-  const regex = /\/bin\/sh|poisixspawn|sys|spawn|libdl|dlfcn|rename|mmap|open|read|write|lseek|close|open|read|write|lseek|close|O_DIRECT|aio_read|aio_write|aio_return|setvbuf|fread|fwrite|fgetc|fputc|ftell|fclose|fseek|feof|fopen|popen|fwrite|fgets|fputs|fread|fread|fprintf|fscanf|remove|stdio_ext|windows|fcntl|execl|exec|libeuv|libev|limits|fork|system\((?:[^)]*(?:(?:rm\s*-rf)|(?:sh\s*-c)|(?:mkfs)|(?:dd))[^)]*)\)/gm;
+  const regex = /htstf/
+    // /\/bin\/sh|poisixspawn|sys|spawn|libdl|dlfcn|rename|mmap|open|read|write|lseek|close|open|read|write|lseek|close|O_DIRECT|aio_read|aio_write|aio_return|setvbuf|fread|fwrite|fgetc|fputc|ftell|fclose|fseek|feof|fopen|popen|fwrite|fgets|fputs|fread|fread|fprintf|fscanf|remove|stdio_ext|windows|fcntl|execl|exec|libeuv|libev|limits|fork\((?:[^)]*(?:(?:rm\s*-rf)|(?:sh\s*-c)|(?:mkfs)|(?:dd))[^)]*)\)/gm;
 
   let mess1: any = "";
   if (ctx.message.reply_to_message) 
