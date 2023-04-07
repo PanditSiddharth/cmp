@@ -1,4 +1,4 @@
-#include<stdio.h>
+#include <stdio.h>
 #include <stdarg.h>
 void printt(const char* format, ...) {
 va_list args;
@@ -17,16 +17,23 @@ va_end(args);
 return result;
 }
 int main() {
-char str[]= "I AM THE BEST";
-int sum=0;
-int i = 0;
-int k;
-while(str[i] !='\0') {
-sum ++;
-i++;
+int arr[100], n, search, i;
+printt("Enter the number of elements in the array: ");
+scann("%d", &n);
+printt("Enter the elements of the array: ");
+for (i = 0; i < n; i++) {
+scann("%d", &arr[i]);
 }
-for(int j=0,k=sum-1;j<k;j++,k—){
-str[j]=str[k];
+printt("Enter the element to search: ");
+scann("%d", &search);
+for (i = 0; i < n; i++) {
+if (arr[i] == search) {
+printt("%d found at position %d.\n", search, i + 1);
+break;
+}
+}
+if (i == n) {
+printt("%d not found in the array.\n", search);
 }
 return 0;
 }

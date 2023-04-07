@@ -1,18 +1,32 @@
 import { Telegraf } from "telegraf";
 
-const bt = (bot: Telegraf) => {
+const bt = (bot: any) => {
   const fs = require('fs');
   const filePath = './dt.txt';
 
+bot.start( async (ctx: any) => {
+ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
+Its 100% free made for helping to students
+
+/𝗰𝗼𝗱𝗲 to excecute your c code in bot ttl: 40 seconds or recreate session 
+/𝗽𝘆 𝗼𝗿 /𝗽𝘆𝘁𝗵𝗼𝗻 to execute your python code
+/𝗹𝗲𝗮𝘃𝗲 to leave session (if you not want excecute your code)
+/help to see full help list
+
+  bot owner @Panditsiddharth 
+  Join @LogicBOts @LogicB_Support
+`).catch(()=> {})
+})
 
 bot.help( async (ctx: any) => {
-ctx.reply(`Commands in this bot
+ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 
 /start basic command for see some help
 /auth For giving access to user so user can excecute his/her codes
 /unauth remove access
 /auths to see auth users list
-/code to excecute your codes in bot ttl: 40 seconds or recreate session 
+/code to excecute your c code in bot ttl: 40 seconds or recreate session 
+/py or /python to execute your python code
 /leave to leave session (if you not want excecute your code)
 /help to see this list again
 

@@ -51,6 +51,7 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
   }
     
   if(ctx.message.text.startsWith('/leave')){
+    console.log("leave")
     ctx.scene.leave()
     return await terminate()
   }
@@ -288,7 +289,7 @@ gccProcess.on('close', async (code: any) => {
   gid: 1000,  
   chroot: './files/',
   maxBuffer: 1024 * 1024, // 1 MB
-  env: {}                                                       });
+  env: {}     });
 
     let inputCount = 0;
 

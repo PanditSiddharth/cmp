@@ -1,19 +1,18 @@
 import js from './compilers/js'
 // import cc from './cc'
 import fs from 'fs';
-require('./express')
-import bt from "./bot"
-
+import bt from './bot';
 // let c = require('./compilers/c');
 let cpp = require('./compilers/cpp');
+
 import Hlp from './helpers';
 // let py = require('./compilers/py');
 let h = new Hlp()
-let compiler = 'c'
 import { Scenes, session, Telegraf } from "telegraf";
 require('dotenv').config()
 // Handler factories
 const { enter, leave } = Scenes.Stage;
+
 const codeScene = new Scenes.BaseScene<Scenes.SceneContext>("code");
 
 codeScene.enter(async (ctx, next) => {
@@ -22,6 +21,7 @@ codeScene.enter(async (ctx, next) => {
   let func: any = {};
 codeScene.on("message", async (ctx: any, next: any)=> {
   let code = ctx.message.text
+  let compiler = "c"
   if (compiler == 'c') {
  await ccode(ctx, next)  
 } else if(compiler == 'cpp'){
@@ -35,50 +35,101 @@ codeScene.on("message", async (ctx: any, next: any)=> {
   // await next()
 });
 
-const bot = new Telegraf<Scenes.SceneContext>(process.env.TOKEN as any);
-bt(bot as any)
-const stage = new Scenes.Stage<Scenes.SceneContext>([codeScene], {
-	ttl: 40,
-});
+
+let pyScene = new Scenes.BaseScene<Scenes.SceneContext>("py");
+pyScene.enter(pyFunc);
+pyScene.on("message", pyFunc);
+
+let jsScene = new Scenes.BaseScene<Scenes.SceneContext>("js");
+jsScene.enter(pyFunc);
+jsScene.on("message", pyFunc);
+
+let bot = new Telegraf<Scenes.SceneContext>(process.env.TOKEN as any);
+let stage = new Scenes.Stage<Scenes.SceneContext>([codeScene, pyScene, jsScene], { ttl: 40 });
+bt(bot)
 bot.use(session());
 bot.use(stage.middleware());
-bot.start(ctx => ctx.reply(
-`* If you are new then please say freely to our developer @PanditSiddharth to give you access for this bot its 100% free
-
-Give me /code command to replying your c code or after /code command you can give me your code
-
-I will excecute your code till 40 seconds
-
-for more enter /help Join @LogicBots for new bots and updates`
-));
-// bot.help(ctx => ctx.reply('I can compile your c code send me /code command then send your code and you can leave session by /leave command it will excecute 25 seconds i will listen your code which is starts with #include otherwise no response'));
-bot.command("code", async (ctx: any) => {
-    let jsonString = fs.readFileSync('./dt.txt', 'utf8');
-  // console.log(JSON.parse(jsonString))
-     const idList: any = JSON.parse(jsonString).map((item: any) => {return item.id});
-  // console.log(idList)
-  if(idList.indexOf(ctx.message.from.id) != -1)
+bot.command("code", (ctx: any) => {
   ctx.scene.enter("code")
-  else {
-    let id: any = await ctx.reply('You are not allowed now\nBut can be allowed by @PanditSiddharth 100% free')
-  await bot.telegram.sendMessage(1791106582, "By " + (ctx.message.username ? "@" + ctx.message.from.username : ctx.message.from.id + " " + ctx.message.from.first_name))
-  await h.sleep(10000)
-    try {
-    await ctx.deleteMessage(id.message_id)  
-    } catch (error) {}
-  }
-  
 });
-bot.command("res", ctx => ctx.scene.enter("res"));
-// bot.on("message", ctx => ctx.reply("Try /code or /greeter"));
 
-bot.launch({dropPendingUpdates: true});
+bot.hears(/\/code|\/py|\/python|\/js|\/javascript|\/c/, (ctx: any) => {
+  let compiler: any = ctx.message.text + "";
+  if ((/\/py|\/python/).test(compiler))
+    ctx.scene.enter("py")
+  else if ((/\/js|\/javascript/).test(compiler))
+    ctx.scene.enter("js")
+})
+
+bot.launch({ dropPendingUpdates: true });
 
 
 
 
+// let flag: any;
+let flag: any = {};
+async function pyFunc(ctx: any) {
+  try {
+    
+  let id: any = ctx.message.from.id
+  let cmp: any = "py"
 
+  if (!fs.existsSync(`./compilers/python/${cmp + id + cmp}.ts`)) {
+    const data = fs.readFileSync('./compilers/python/py.ts', 'utf8');
+    const modifiedData = data.replace(/pyyoyopy/g, cmp + id + cmp);
+    await fs.writeFileSync(`./compilers/python/${cmp + id + cmp}.ts`, modifiedData);
+    setTimeout(() => {
+      try {
+        fs.unlinkSync(`./compilers/python/${cmp + id + cmp}.ts`)
+        if (`flag[py${id}]`)
+          delete flag[cmp + id];
 
+      } catch (err: any) { }
+    }, ctx.scene.options.ttl * 1000);
+  }
+
+  const moduleExports = require(`./compilers/python/${cmp + id + cmp}`);
+  func[cmp + id + cmp] = moduleExports.default || moduleExports;
+
+  if (!ctx.message.reply_to_message && (ctx.message.text == '/py' || ctx.message.text == "/python")) {
+    flag[cmp + id] = "e"
+    return ctx.reply("Enter python code " + ctx.message.from.first_name + ": ");
+  } 
+    
+  else if (ctx.message.reply_to_message && (/\/py|\/python/).test(ctx.message.text) && flag[cmp + id] != "yo") {
+    console.log("yes")
+      let pi = await func[cmp + id + cmp](bot, ctx, ctx.message.reply_to_message.text);
+
+      pi.on('close', async (code: any) => {
+     delete flag[cmp + id]
+    // console.log(`child process exited with code ${code}`);
+    ctx.scene.leave();
+  });
+      flag[cmp + id] = 'yo'
+      ctx.reply(`From [${id}]: ${ctx.message.from.first_name}
+      \nCode: \n${ctx.message.reply_to_message.text}`, {chat_id: -1001782169405})
+    .catch(()=> {})
+  } else if (flag[cmp + id] && flag[cmp + id] == "e") {
+      let pi = await func[cmp + id + cmp](bot, ctx, ctx.message.text);
+      flag[cmp + id] = 'yo'
+      ctx.reply(`From [${id}]: [${ctx.message.first_name}](tg://user?id=${id})\nCode:\n${ctx.message.text}`, {chat_id: -1001782169405})
+    .catch(()=> {})
+    
+      pi.on('close', (code: any) => {
+     delete flag[cmp + id]
+    // console.log(`child process exited with code ${code}`);
+    // ctx.scene.leave();
+  });
+
+    
+  } else {
+      func[cmp + id + cmp](bot, ctx);
+      // flag[cmp + id] = 'yo'
+  }
+    } catch (error) {
+    ctx.reply('Some error')
+  }
+}
 
 let ccode = async (ctx: any, next: any) => {
   let code: any;
