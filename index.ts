@@ -134,6 +134,7 @@ async function pyFunc(ctx: any) {
     if(("" + ctx.message.text).startsWith("/leave"))
     flag[cmp + id] = null
     } catch (error) {
+    console.log(error)
     ctx.reply('Some error')
   }
 }

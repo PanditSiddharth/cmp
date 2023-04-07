@@ -21,6 +21,7 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, code: any = false) => {
       }
     
   let pyout = async (data: any) => {
+    
     console.log('st: ' + data)
     if(mid == 0){
     editedMes += data
@@ -28,12 +29,15 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, code: any = false) => {
     .catch(()=> {})
     }
     else{
+      console.log("Its mid ")
+      console.log(mid)
     editedMes += data
     await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
     .catch((err)=> {console.log(err)})
     console.log(`stdout: ${data}`);
     }
     ctxemitter.on('ctx', (ctxx:any) => {
+      ctxx.deleteMessage()
     python.stdin.write(ctxx.message.text + "\n")
     editedMes += ctxx.message.text + "\n"
       console.log('yes')
@@ -64,19 +68,19 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, code: any = false) => {
 
 let m = true
   python.stderr.on('data',async (data: any) => {
-    await h.sleep(100);
+
     if(mid == 0 && m){
       m = false
     ErrorMes = ErrorMes + data
     ctx.reply("" + ErrorMes)
-    .then(async (mmm: any)=> {mid = mmm.message_id; await h.sleep(30000);
+    .then(async (mmm: any)=> {mid = mmm; await h.sleep(30000);
     ctx.deleteMessage(mmm.message_id).catch(()=> {})}).catch(()=> {})
     }
     else{
      ErrorMes = ErrorMes + data
     bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, ErrorMes)
     .then(async (mmm: any)=> {await h.sleep(30000);
-    ctx.deleteMessage(mmm.message_id).catch(()=> {})}).catch(()=> {})
+    ctx.deleteMessage(mmm).catch(()=> {})}).catch(()=> {})
     // console.log(`stdout: ${data}`);
     }
     
@@ -112,6 +116,8 @@ let m = true
 module.exports = pyyoyopy
 
 let terminate = async () => {
+
+   mid = 0
   if (python) {
     python.removeAllListeners()
     await python.kill("SIGKILL")
@@ -122,8 +128,8 @@ let terminate = async () => {
   if (ctxemitter) 
     ctxemitter.removeAllListeners()
 
-// h.sleep(100).then(()=> {mid = 0})
-  mid = 0
+h.sleep(1000).then(()=> {mid = 0})
+ 
 ErrorMes = "Error: \n"
 editedMes = "Output: \n"
   
