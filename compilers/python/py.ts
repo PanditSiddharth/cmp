@@ -19,7 +19,9 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, code: any = false) => {
         terminate()
         return ctx.scene.leave()
       }
+    
   let pyout = async (data: any) => {
+    console.log('st: ' + data)
     if(mid == 0){
     editedMes += data
     mid = await ctx.reply("" + editedMes)
@@ -28,7 +30,7 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, code: any = false) => {
     else{
     editedMes += data
     await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
-    .catch(()=> {})
+    .catch((err)=> {console.log(err)})
     console.log(`stdout: ${data}`);
     }
     ctxemitter.on('ctx', (ctxx:any) => {
@@ -39,6 +41,7 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, code: any = false) => {
   }
   
   if(!code){
+    console.log('code not exists')
   return ctxemitter.emit('ctx', (ctx));
   }
       
@@ -89,6 +92,9 @@ let m = true
       ctx.reply('Program terminated successfully')
       .then(async (mmm: any)=> {await h.sleep(10000);
       ctx.deleteMessage(mmm.message_id).catch(()=> {})}).catch(()=> {})
+    } else {
+      ctx.reply('Program terminated unsuccessfully')
+      
     }
     ctx.scene.leave();
     terminate()
@@ -105,14 +111,19 @@ let m = true
 
 module.exports = pyyoyopy
 
-let terminate = () => {
-  if (python) 
-    python.kill()
+let terminate = async () => {
+  if (python) {
+    python.removeAllListeners()
+    await python.kill("SIGKILL")
+    python = null
+    console.log(python)
+  }
   console.log('terminating...')
   if (ctxemitter) 
     ctxemitter.removeAllListeners()
 
-h.sleep(100).then(()=> {mid = 0})
+// h.sleep(100).then(()=> {mid = 0})
+  mid = 0
 ErrorMes = "Error: \n"
 editedMes = "Output: \n"
   

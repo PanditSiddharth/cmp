@@ -91,6 +91,10 @@ async function pyFunc(ctx: any) {
   const moduleExports = require(`./compilers/python/${cmp + id + cmp}`);
   func[cmp + id + cmp] = moduleExports.default || moduleExports;
 
+      if(("" + ctx.message.text).startsWith("/leave"))
+    flag[cmp + id] = null
+        
+    
   if (!ctx.message.reply_to_message && (ctx.message.text == '/py' || ctx.message.text == "/python")) {
     flag[cmp + id] = "e"
     return ctx.reply("Enter python code " + ctx.message.from.first_name + ": ");
@@ -101,9 +105,9 @@ async function pyFunc(ctx: any) {
       let pi = await func[cmp + id + cmp](bot, ctx, ctx.message.reply_to_message.text);
 
       pi.on('close', async (code: any) => {
-     delete flag[cmp + id]
+     flag[cmp + id] = null
     // console.log(`child process exited with code ${code}`);
-    ctx.scene.leave();
+    // ctx.scene.leave();
   });
       flag[cmp + id] = 'yo'
       ctx.reply(`From [${id}]: ${ctx.message.from.first_name}
@@ -116,7 +120,7 @@ async function pyFunc(ctx: any) {
     .catch(()=> {})
     
       pi.on('close', (code: any) => {
-     delete flag[cmp + id]
+     flag[cmp + id] = null
     // console.log(`child process exited with code ${code}`);
     // ctx.scene.leave();
   });
@@ -126,6 +130,9 @@ async function pyFunc(ctx: any) {
       func[cmp + id + cmp](bot, ctx);
       // flag[cmp + id] = 'yo'
   }
+
+    if(("" + ctx.message.text).startsWith("/leave"))
+    flag[cmp + id] = null
     } catch (error) {
     ctx.reply('Some error')
   }
