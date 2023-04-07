@@ -1,8 +1,8 @@
-let py = (code: any) => {
-  let input = require('../../input');
+let input = require('../../input');
 let out = require('../../output');
 let Hlp = require('../../helpers')
 let { spawn } = require('child_process');
+let py = (code: any) => {
 let h = new Hlp();
 
   const python = spawn('python', ['script.py']);
