@@ -55,8 +55,6 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
     return await terminate()
   }
     
-
-
    ok = true
   async function outfunc (data:  any) {
       let dat = data.toString()
@@ -136,12 +134,12 @@ ctx.reply('some error occoured')
             return
           }
             cbuff = true
-          await h.sleep(25)
+          await h.sleep(30)
           dat = datt
           cbuff = false
           datt = "";
           // .then(()=>{
-         
+         console.log(dat)
           // })
            // if(mid == 0){
         if (dat.length < 1000) {
@@ -175,7 +173,8 @@ ctx.reply('some error occoured')
              // ctx.reply(editedMes)
                   
            }
-          } else {
+          } 
+        else {
           const phrases = dat.split(/\s+/);
          const uniquePhrases = [...new Set(phrases)];
 
@@ -223,7 +222,13 @@ ctx.reply('error in stdout only reply ' + error.message)
   try {
   if(programProcess){
     // terminated = false
-  ctx.sendMessage('Excecution time up').catch(()=>{})
+  ctx.sendMessage(ctx.message.from.first_name + ' your Excecution time end', {reply_to_message_id: mid})
+  .then(async (c: any)=> {
+   await h.sleep(10000)
+   ctx.deleteMessage(c.message_id).catch(()=> {});
+  })
+    .catch(()=>{})
+    
   }
   terminate()
   } catch (error) { }

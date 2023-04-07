@@ -1,2 +1,3 @@
 print('Hello lolz')
-print('Running python')
+a = input()
+print('Hello lolz')
