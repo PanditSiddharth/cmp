@@ -1,8 +1,9 @@
 import { Telegraf } from "telegraf";
-
+import mdb from "./db";
 const bt = (bot: any) => {
   const fs = require('fs');
   const filePath = './dt.txt';
+mdb(bot as any)
 
 bot.start( async (ctx: any) => {
 ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
