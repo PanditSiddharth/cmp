@@ -1,10 +1,10 @@
 import js from './compilers/js'
-// import cc from './cc'
+import keep_alive from './keep_alive'
 import fs from 'fs';
 import bt from './bot';
 // let c = require('./compilers/c');
 let cpp = require('./compilers/cpp');
-
+keep_alive()
 import Hlp from './helpers';
 // let py = require('./compilers/py');
 let h = new Hlp()

@@ -29,16 +29,16 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, code: any = false) => {
     .catch(()=> {})
     }
     else{
-      console.log("Its mid ")
-      console.log(mid)
+      
     editedMes += data
     await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
     .catch((err)=> {console.log(err)})
-    console.log(`stdout: ${data}`);
+    //console.log(`stdout: ${data}`);
     }
-    ctxemitter.on('ctx', (ctxx:any) => {
-      ctxx.deleteMessage()
-    python.stdin.write(ctxx.message.text + "\n")
+    ctxemitter.on('ctx', async (ctxx:any) => {
+   ctxx.deleteMessage().catch(()=>{})
+    
+      try{ await python.stdin.write(ctxx.message.text + "\n")} catch(err:any){console.log(err)}
     editedMes += ctxx.message.text + "\n"
       console.log('yes')
     });
