@@ -16,24 +16,9 @@ int result = vscanf(format, args);
 va_end(args);
 return result;
 }
-int main() {
-int arr[100], n, search, i;
-printt("Enter the number of elements in the array: ");
-scann("%d", &n);
-printt("Enter the elements of the array: ");
-for (i = 0; i < n; i++) {
-scann("%d", &arr[i]);
-}
-printt("Enter the element to search: ");
-scann("%d", &search);
-for (i = 0; i < n; i++) {
-if (arr[i] == search) {
-printt("%d found at position %d.\n", search, i + 1);
-break;
-}
-}
-if (i == n) {
-printt("%d not found in the array.\n", search);
-}
+int main(){
+int a;
+printt("hi");
+scann("%d", &a);
 return 0;
 }

@@ -49,9 +49,18 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf)=>{
     ctx.deleteMessage(mmm.message_id).catch(()=>{})
     }
   }
+  if(ctx.message.text.startsWith('/py') || ctx.message.text.startsWith('/python')){
+    terminate()
+    // ctx.scene.leave()
+    ctx.scene.enter('py')
+  }
     
   if(ctx.message.text.startsWith('/leave')){
     console.log("leave")
+    ctx.reply("Session Terminated")
+    .then(async (rd: any) => {await h.sleep(5000); ctx.deleteMessage(rd.message_id).catch(()=>{})})
+    .catch(()=> {})
+    
     ctx.scene.leave()
     return await terminate()
   }

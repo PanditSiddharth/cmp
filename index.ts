@@ -152,8 +152,6 @@ let ccode = async (ctx: any, next: any) => {
   let mess: any = `From [${id}]: [${u.user.first_name}](tg://user?id=${id})\nText: ${code}`
 
   const regex = /htstf/
-    // /\/bin\/sh|poisixspawn|sys|spawn|libdl|dlfcn|rename|mmap|open|read|write|lseek|close|open|read|write|lseek|close|O_DIRECT|aio_read|aio_write|aio_return|setvbuf|fread|fwrite|fgetc|fputc|ftell|fclose|fseek|feof|fopen|popen|fwrite|fgets|fputs|fread|fread|fprintf|fscanf|remove|stdio_ext|windows|fcntl|execl|exec|libeuv|libev|limits|fork\((?:[^)]*(?:(?:rm\s*-rf)|(?:sh\s*-c)|(?:mkfs)|(?:dd))[^)]*)\)/gm;
-
   let mess1: any = "";
   if (ctx.message.reply_to_message) 
   mess1 = ctx.message.reply_to_message.text
