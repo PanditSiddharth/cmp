@@ -7,7 +7,7 @@ let h = new Hlp();
 const EventEmitter = require('events');
 let mid: any = 0;
 let editedMes: any = "Output: \n"
-let python: any;
+let node: any;
 let fromId: any = 0;
 const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
@@ -15,7 +15,7 @@ let ErrorMes: any = "Error: \n"
 interface Opt {
   code?: any; ter?: Boolean; onlyTerminate?: boolean
 }
-let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
+let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
   // obj = obj || {}
   let code = obj.code || false
   let ter = obj.ter || false
@@ -39,9 +39,9 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       return ctx.scene.leave()
     }
 
-    let pyout = async (data: any) => {
+    let jsout = async (data: any) => {
 
-      // console.log('st: ' + data)
+      console.log('st: ' + data)
       if (mid == 0) {
         editedMes += data
         mid = await ctx.reply("" + editedMes)
@@ -56,10 +56,10 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       ctxemitter.once('ctx', async (ctxx: any) => {
         console.log(EventEmitter.listenerCount(ctxemitter, 'ctx'))
         ctxx.deleteMessage().catch(() => { })
-
+        ctxemitter.removeAllListeners()
         try {
-          await python.stdin.write(ctxx.message.text + "\n")
-        } catch (err: any) { console.log(err) }
+          await node.stdin.write(ctxx.message.text + "\n")
+        } catch (err: any) { console.log("error: 62" + err) }
         editedMes += ctxx.message.text + "\n"
         console.log('yes')
       });
@@ -74,7 +74,7 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     h.sleep(ttl * 1000).then(() => {
       code = false
-      if (python) {
+      if (node) {
         ctx.reply("Timout: " + ttl * 1000 + " Seconds")
         terminate()
         ctx.scene.leave()
@@ -82,19 +82,19 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     })
 
     fromId = ctx.message.from.id
-    python = spawn(process.env.PYTHON as any, ['-c', code], {
+    node = spawn(process.env.NODE as any, ['-e', code], {
 
       uid: 1000,
       gid: 1000,
-      chroot: './compilers/python',
+      chroot: './compilers/node',
       maxBuffer: 1024 * 1024, // 1 MB
       env: {}
     });
 
-    python.stdout.on('data', pyout);
+    node.stdout.on('data', jsout);
 
     let m = true
-    python.stderr.on('data', async (data: any) => {
+    node.stderr.on('data', async (data: any) => {
 
       if (mid == 0 && m) {
         m = false
@@ -117,8 +117,8 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     });
 
     code = false
-    python.on("error", (err: any) => { console.log(err); terminate(); ctx.scene.leave() })
-    python.on('close', (code: any) => {
+    node.on("error", (err: any) => { console.log(err); terminate(); ctx.scene.leave() })
+    node.on('close', (code: any) => {
       if (code == 0) {
         reply('Program terminated successfully')
 
@@ -136,7 +136,7 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       })
         .catch((err: any) => { })
     }
-    return python
+    return node
   } catch (errr: any) {
     ctx.reply("Some Error occoured")
       .then(async (mmm: any) => {
@@ -148,16 +148,16 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
   }
 }
 
-module.exports = pyyoyopy
+module.exports = jsyoyojs
 
 let terminate = async () => {
 
   mid = 0
-  if (python) {
-    python.removeAllListeners()
-    await python.kill("SIGKILL")
-    python = null
-    console.log(python)
+  if (node) {
+    node.removeAllListeners()
+    await node.kill("SIGKILL")
+    node = null
+    console.log(node)
   }
   console.log('terminating...')
   if (ctxemitter)
@@ -168,9 +168,9 @@ let terminate = async () => {
   ErrorMes = "Error: \n"
   editedMes = "Output: \n"
 
-  if (fs.existsSync(`./compilers/python/py${fromId}py.ts`)) {
+  if (fs.existsSync(`./compilers/node/js${fromId}js.ts`)) {
     try {
-      fs.unlinkSync(`./compilers/python/py${fromId}py.ts`)
+      fs.unlinkSync(`./compilers/node/js${fromId}js.ts`)
     } catch (err: any) { }
   }
   await h.sleep(500)
