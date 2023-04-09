@@ -250,17 +250,17 @@ let cod = await mstr(code);
   if(!filename)
     filename = 'cfile.c'
   let outfile = filename.replace(".c", "");
-fs.writeFileSync('./files/' + filename, cod, {flag: 'w'}, (err: any) => {
+fs.writeFileSync('./files/ccode/' + filename, cod, {flag: 'w'}, (err: any) => {
   if (err) throw err;
 });
 
-gccProcess = spawn('gcc', ['-o', './files/' + outfile, './files/' + filename, '-lm'], {stdio: ['pipe', 'inherit']});
+gccProcess = spawn('gcc', ['-o', './files/ccode/' + outfile, './files/ccode/' + filename, '-lm'], {stdio: ['pipe', 'inherit']});
 
 gccProcess.stderr.on('data', async (data: string) => {
   console.error(`gccstderr: ${data}`);
   try {
       let stri = data + '.';
-      let arri = stri.split('./files/')
+      let arri = stri.split('./files/ccode/')
       let strii : any = ''
     for (let i = 0; i < arri.length; i++) {
     if (("" + arri[i]).includes('error:')) {
@@ -293,10 +293,10 @@ gccProcess.on('close', async (code: any) => {
   if (code === 0) {
     
     // If compilation succeeds, execute the program
-    programProcess = spawn('./files/' + outfile, [], {
+    programProcess = spawn('./files/ccode/' + outfile, [], {
   uid: 1000, 
   gid: 1000,  
-  chroot: './files/',
+  chroot: './files/ccode/',
   maxBuffer: 1024 * 1024, // 1 MB
   env: {}     });
 
@@ -470,7 +470,7 @@ async function nton(inputCode: any) {
 
 async function handleCFileAdded() {
   // Get all .c files in the directory
-  let cFilesDir = './files/'
+  let cFilesDir = './files/ccode/'
   
   const cFiles = fs.readdirSync(cFilesDir).filter((file : any) => file.endsWith('.c'));
 
@@ -481,7 +481,7 @@ async function handleCFileAdded() {
       return oldestCFile;
   } else {
 
-    let file: any = fs.openSync('./files/cfile' + Math.floor(Date.now()/100000000000) + '.c', 'w');
+    let file: any = fs.openSync('./files/ccode/cfile' + Math.floor(Date.now()/100000000000) + '.c', 'w');
  
     // file.close()
     return 'itsC.c'
@@ -491,7 +491,7 @@ async function handleCFileAdded() {
 // Get the oldest .c file in the directory
 function getOldestCFile(cFiles: any) {
   let oldestFile = cFiles[0];
-  let cFilesDir = './files'
+  let cFilesDir = './files/ccode/'
   let oldestFileMtime = fs.statSync(`${cFilesDir}/${oldestFile}`).mtime;
 
   for (let i = 1; i < cFiles.length; i++) {

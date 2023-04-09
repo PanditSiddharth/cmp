@@ -4,6 +4,7 @@ import fs from 'fs';
 import bt from './bot';
 import pyStarter from './starters/pystarter'
 import jsStarter from './starters/jsstarter'
+import cppStarter from './starters/cppstarter'
 // let c = require('./compilers/c');
 let cpp = require('./compilers/cpp');
 keep_alive()
@@ -17,7 +18,7 @@ const { enter, leave } = Scenes.Stage;
 
 const codeScene = new Scenes.BaseScene<Scenes.SceneContext>("code");
 
-codeScene.enter(async pip install (ctx, next) => {
+codeScene.enter(async (ctx, next) => {
   await ccode(ctx, next)
 })
 let func: any = {};
@@ -42,12 +43,16 @@ let pyScene = new Scenes.BaseScene<Scenes.SceneContext>("py");
 pyScene.enter(async (ctx: any)=> {await pyStarter(bot, ctx)});
 pyScene.on("message",async (ctx: any)=> {await pyStarter(bot, ctx)});
 
+let cppScene = new Scenes.BaseScene<Scenes.SceneContext>("cpp");
+cppScene.enter(async (ctx: any)=> {await cppStarter(bot, ctx)});
+cppScene.on("message",async (ctx: any)=> {await cppStarter(bot, ctx)});
+
 let jsScene = new Scenes.BaseScene<Scenes.SceneContext>("js");
 jsScene.enter(async (ctx: any)=> {await jsStarter(bot, ctx)});
 jsScene.on("message",async (ctx: any)=> {await jsStarter(bot, ctx)});
 
 let bot = new Telegraf<Scenes.SceneContext>(process.env.TOKEN as any);
-let stage = new Scenes.Stage<Scenes.SceneContext>([codeScene, pyScene, jsScene], { ttl: 40 });
+let stage = new Scenes.Stage<Scenes.SceneContext>([codeScene, pyScene, jsScene, cppScene], { ttl: 40 });
 bt(bot)
 bot.use(session());
 bot.use(stage.middleware());
@@ -55,12 +60,14 @@ bot.command("code", (ctx: any) => {
   ctx.scene.enter("code")
 });
 
-bot.hears(/^\/(code|py|python|js|node|c|cpp|cp|c\+\+)/i, (ctx: any) => {
+bot.hears(/^\/(code|py|python|js|node|c|cpp|cplus|c\+\+)/i, (ctx: any) => {
   let compiler: any = ctx.message.text + "";
   if ((/^\/(py|python)/i).test(compiler))
     ctx.scene.enter("py")
   else if ((/^\/(js|node)/i).test(compiler))
     ctx.scene.enter("js")
+    else if ((/^\/(cpp|cplus)/i).test(compiler))
+    ctx.scene.enter("cpp")
 })
 
 bot.launch({ dropPendingUpdates: true });

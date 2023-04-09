@@ -30,7 +30,7 @@ async function pyStarter(bot: any, ctx: any) {
     if (("" + ctx.message.text).startsWith("/leave"))
       flag[cmp + id] = null
 
-    if ((/^\/(py|python)/i).test(ctx.message.text) && ctx.message.text.length > 3) {
+    if ((/^\/(py|python)/i).test(ctx.message.text) && ctx.message.text.length > 8) {
       let code: any;
       let pi: any;
       console.log('yoo')
