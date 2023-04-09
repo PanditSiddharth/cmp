@@ -9,8 +9,8 @@ const bt = (bot: any) => {
 𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 =========================
 
-𝐕𝐞𝐫𝐬𝐢𝐨𝐧: 0.1.0
-𝐕𝐞𝐫𝐬𝐢𝐨𝐧 𝐧𝐨.: 4
+𝐕𝐞𝐫𝐬𝐢𝐨𝐧: 0.2.0
+𝐕𝐞𝐫𝐬𝐢𝐨𝐧 𝐧𝐨.: 5
 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫: @PanditSiddharth
 
 𝗙𝗲𝗮𝘁𝘂𝗿𝗲𝘀:
@@ -18,14 +18,17 @@ const bt = (bot: any) => {
   # 𝐏𝐲𝐭𝐡𝐨𝐧 𝐜𝐨𝐦𝐩𝐢𝐥𝐞𝐫
   # 𝐂 𝐜𝐨𝐦𝐩𝐢𝐥𝐞𝐫
 =========================
-`).catch(()=> {})
+`).catch(() => { })
   })
   bot.start(async (ctx: any) => {
     ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 Its 100% free made for helping to students
 
-/𝗰𝗼𝗱𝗲 to excecute your c code in bot ttl: 40 seconds or recreate session 
+/𝗰𝗼𝗱𝗲 to excecute your c code
 /𝗽𝘆 𝗼𝗿 /𝗽𝘆𝘁𝗵𝗼𝗻 to execute your python code
+/𝗽𝘆 𝗼𝗿 /𝗽𝘆𝘁𝗵𝗼𝗻 to execute your python code
+/js or /node to execute your javascript code
+/cpp or /cplus to execute your cplus code
 /𝗹𝗲𝗮𝘃𝗲 to leave session (if you not want excecute your code)
 /help to see full help list
 
@@ -37,15 +40,13 @@ Its 100% free made for helping to students
   bot.help(async (ctx: any) => {
     ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 
-/start basic command for see some help
 /version or /v to see latest version and features
-/auth For giving access to user so user can excecute his/her codes
-/unauth remove access
-/auths to see auth users list
-/code to excecute your c code in bot ttl: 40 seconds or recreate session 
+/code to excecute your c code
 /py or /python to execute your python code
+/js or /node to execute your javascript code
+/cpp or /cplus to execute your cplus code
 /leave to leave session (if you not want excecute your code)
-/help to see this list again
+/help to see commands in bot
 
   bot owner @Panditsiddharth 
 `);
