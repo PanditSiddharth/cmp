@@ -16,28 +16,12 @@ int result = vscanf(format, args);
 va_end(args);
 return result;
 }
-#include<string.h>
-int main() {
-typedef struct cricketer{
-char name[15];
-int age ;
-int noOfmatches ;
-float average ;
-} cricketer ;
-cricketer arr[3];
-for(int i=0;i<3;i++) {
-char str[15];
-scann("%[^\ns",str);
-strcpy(arr[i].name,str);
-scann("%d",&arr[i].age);
-scann("%d",&arr[i].noOfmatches);
-scann("%f",&arr[i].average);
+int main (){
+for(int i = 5 ; i<=50 ; i){
+if (i == 6 || i == 8){
+continue;
 }
-for(int k=0;k<3;k++){
-printt("name :%s ", arr[k].name);
-printt("age :%d",arr[k].age);
-printt("no off matches: %d",arr[k].noOfmatches);
-printt("Average ;%f",arr[k].average);
+printt("%d\n", i);
 }
 return 0;
 }

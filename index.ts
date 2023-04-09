@@ -17,7 +17,7 @@ const { enter, leave } = Scenes.Stage;
 
 const codeScene = new Scenes.BaseScene<Scenes.SceneContext>("code");
 
-codeScene.enter(async (ctx, next) => {
+codeScene.enter(async pip install (ctx, next) => {
   await ccode(ctx, next)
 })
 let func: any = {};

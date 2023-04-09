@@ -3,10 +3,25 @@ import mdb from "./db";
 const bt = (bot: any) => {
   const fs = require('fs');
   const filePath = './dt.txt';
-mdb(bot as any)
+  mdb(bot as any)
+  bot.hears(/^\/(v|version)/, (ctx: any) => {
+    ctx.reply(`=========================
+𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
+=========================
 
-bot.start( async (ctx: any) => {
-ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
+𝐕𝐞𝐫𝐬𝐢𝐨𝐧: 0.1.0
+𝐕𝐞𝐫𝐬𝐢𝐨𝐧 𝐧𝐨.: 4
+𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫: @PanditSiddharth
+
+𝗙𝗲𝗮𝘁𝘂𝗿𝗲𝘀:
+  # 𝐍𝐨𝐝𝐞 𝐣𝐬 𝐜𝐨𝐦𝐩𝐢𝐥𝐞𝐫
+  # 𝐏𝐲𝐭𝐡𝐨𝐧 𝐜𝐨𝐦𝐩𝐢𝐥𝐞𝐫
+  # 𝐂 𝐜𝐨𝐦𝐩𝐢𝐥𝐞𝐫
+=========================
+`).catch(()=> {})
+  })
+  bot.start(async (ctx: any) => {
+    ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 Its 100% free made for helping to students
 
 /𝗰𝗼𝗱𝗲 to excecute your c code in bot ttl: 40 seconds or recreate session 
@@ -16,13 +31,14 @@ Its 100% free made for helping to students
 
   bot owner @Panditsiddharth 
   Join @LogicBOts @LogicB_Support
-`).catch(()=> {})
-})
+`).catch(() => { })
+  })
 
-bot.help( async (ctx: any) => {
-ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
+  bot.help(async (ctx: any) => {
+    ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 
 /start basic command for see some help
+/version or /v to see latest version and features
 /auth For giving access to user so user can excecute his/her codes
 /unauth remove access
 /auths to see auth users list
@@ -33,45 +49,45 @@ ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹�
 
   bot owner @Panditsiddharth 
 `);
-})
-  
+  })
 
-bot.command('auths', async (ctx: any) => {
-  try {
-  let mess = 'Auth Users\n'
-  // let jso : any = [];
-  let arr: any = readJSON()
-    
-  for (const idd of arr) {
-    try{
-    // let u: any = await ctx.getChatMember(id)
-    mess += await `[${idd.id}]: [${idd.name}](tg://user?id=${idd.id})\n`
-      // await jso.push({id, "name": u.user.first_name})
-    }catch(err:any){}
-  }
-    
-  ctx.replyWithMarkdown(mess)
-    // writeJSON(jso)
-      } catch (error: any) {
-    ctx.reply('Error: ' + error.message)
-  }
-});
 
-bot.command('auth', async (ctx: any) => {
+  bot.command('auths', async (ctx: any) => {
     try {
-      if(ctx.message && !list.includes(ctx.message.from.id))
+      let mess = 'Auth Users\n'
+      // let jso : any = [];
+      let arr: any = readJSON()
+
+      for (const idd of arr) {
+        try {
+          // let u: any = await ctx.getChatMember(id)
+          mess += await `[${idd.id}]: [${idd.name}](tg://user?id=${idd.id})\n`
+          // await jso.push({id, "name": u.user.first_name})
+        } catch (err: any) { }
+      }
+
+      ctx.replyWithMarkdown(mess)
+      // writeJSON(jso)
+    } catch (error: any) {
+      ctx.reply('Error: ' + error.message)
+    }
+  });
+
+  bot.command('auth', async (ctx: any) => {
+    try {
+      if (ctx.message && !list.includes(ctx.message.from.id))
         return ctx.reply('You are not allowed to add more users')
       let value: any;
       let id: any;
-      if(ctx.message && ctx.message.reply_to_message){
+      if (ctx.message && ctx.message.reply_to_message) {
         id = ctx.message.reply_to_message.from.id;
       } else {
         value = ctx.message.text;
-      var match = value.match(/\/auth\s+(\d+)/);
-      id = match ? match[1] : null;
-      // id = 12345674
+        var match = value.match(/\/auth\s+(\d+)/);
+        id = match ? match[1] : null;
+        // id = 12345674
       }
-      if(await updateJSON(id, ctx)){
+      if (await updateJSON(id, ctx)) {
         ctx.reply(`${(await ctx.getChatMember(id)).user.first_name} is successfully added to access this bot`)
       }
       else ctx.reply(`Can't add null id !!`)
@@ -80,29 +96,29 @@ bot.command('auth', async (ctx: any) => {
     }
   });
 
-bot.command('unauth', async (ctx: any) => {
+  bot.command('unauth', async (ctx: any) => {
     try {
-        if(ctx.message && !list.includes(ctx.message.from.id))
+      if (ctx.message && !list.includes(ctx.message.from.id))
         return ctx.reply('You are not allowed to remove users')
       let value: any;
       let id: any;
-      if(ctx.message && ctx.message.reply_to_message){
+      if (ctx.message && ctx.message.reply_to_message) {
         id = ctx.message.reply_to_message.from.id;
       } else {
         value = ctx.message.text;
-      let match = value.match(/\/unauth\s+(\d+)/);
-      id = match ? match[1] : null;
+        let match = value.match(/\/unauth\s+(\d+)/);
+        id = match ? match[1] : null;
         // console.log(id)
       }
-       if(removeId(id))
+      if (removeId(id))
         ctx.reply(`${(await ctx.getChatMember(id)).user.first_name} is removed to access the bot`)
-else ctx.reply(`Id null i can't remove`)
+      else ctx.reply(`Id null i can't remove`)
     } catch (error: any) {
       ctx.reply('Error: ' + error);
     }
   });
-  
-  let list: any = [1791106582,1942730863,1580821417,1643271211]
+
+  let list: any = [1791106582, 1942730863, 1580821417, 1643271211]
   // Function to write a new JSON object to the file
   function writeJSON(data: any) {
     const jsonString = JSON.stringify(data);
@@ -118,28 +134,28 @@ else ctx.reply(`Id null i can't remove`)
   // Function to update an existing JSON object in the file
   let updateJSON = async (value: any, ctx: any) => {
     let data: any = readJSON();
-  if(!isNaN(parseInt(value))){
-    try {
-    let u: any = await ctx.getChatMember(value)
-    data.push({"id": parseInt(value), "name": u.user.first_name})
-    console.log(data)
-    writeJSON(data);
-    return true
-          } catch (error) { }
-      }
+    if (!isNaN(parseInt(value))) {
+      try {
+        let u: any = await ctx.getChatMember(value)
+        data.push({ "id": parseInt(value), "name": u.user.first_name })
+        console.log(data)
+        writeJSON(data);
+        return true
+      } catch (error) { }
+    }
     return false
   }
 
   // Function to remove a specific value from the ids array in the file
   function removeId(id: any) {
-  let data = readJSON();
-  if(!isNaN(parseInt(id)) ){
     let data = readJSON();
-    let farr = data.filter((item:any) => { return item.id != parseInt(id) });
-    console.log(farr)
-    writeJSON(farr);
-    return true
-  }
+    if (!isNaN(parseInt(id))) {
+      let data = readJSON();
+      let farr = data.filter((item: any) => { return item.id != parseInt(id) });
+      console.log(farr)
+      writeJSON(farr);
+      return true
+    }
     return false
   }
 }

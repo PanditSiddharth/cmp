@@ -1,5 +1,6 @@
 { pkgs }: {
     deps = [
+        pkgs.python39Packages.pip
         pkgs.toybox
         pkgs.dotnet-sdk_5
         pkgs.nixos-rebuild
