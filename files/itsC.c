@@ -1,5 +1,4 @@
-From 6248549791: નાदाન પરિन्दे
-Text: #include<stdio.h>
+#include<stdio.h>
 #include <stdarg.h>
 void printt(const char* format, ...) {
 va_list args;
@@ -17,15 +16,14 @@ int result = vscanf(format, args);
 va_end(args);
 return result;
 }
-void main()
+int main()
 {
 int i, j, k;
-clrscr();
 for (i = 1; i <= 5; i++)
 {
 for (j = 1; j <= 6 - i; j++)
 {
-printt("");
+printt("*");
 }
 for (k = 1; k < i; k++)
 {
@@ -33,7 +31,7 @@ printt("  ");
 } 
 for (j = 1; j <= 6 - i; j++)
 {
-printt("");
+printt("*");
 }
 printt("\n");
 }
@@ -41,7 +39,7 @@ for (i = 2; i <= 5; i++)
 {
 for (j = 1; j <= i; j++)
 {
-printt("");
+printt("*");
 }
 for (k = 1; k <= 5 - i; k++)
 {
@@ -49,9 +47,9 @@ printt("  ");
 }
 for (j = 1; j <= i; j++)
 {
-printt("");
+printt("*");
 }
 printt("\n");
 }
-getch();
+return 0;
 }

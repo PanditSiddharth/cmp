@@ -71,6 +71,7 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, code: any = false) => {
 
     fromId = ctx.message.from.id
     python = spawn(process.env.PYTHON as any, ['-c', code], {
+     
       uid: 1000,
       gid: 1000,
       chroot: './compilers/python',
