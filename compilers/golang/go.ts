@@ -7,15 +7,16 @@ let h = new Hlp();
 const EventEmitter = require('events');
 let mid: any = 0;
 let editedMes: any = "Output: \n"
-let cplus: any;
+let golang: any;
 let fromId: any = 0;
 const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
 let buff = false
+let goFile: any;
 interface Opt {
   code?: any; ter?: Boolean; onlyTerminate?: boolean
 }
-let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
+let goyoyogo = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
   // obj = obj || {}
   let code = obj.code || false
   let ter = obj.ter || false
@@ -41,7 +42,7 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     let previous = Date.now()
     let repeats = 0
-    let cppout = async (tempdata: any) => {
+    let goout = async (tempdata: any) => {
       let current = Date.now()
       if (previous + 30 > current)
         repeats++
@@ -52,18 +53,17 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         return
       }
       editedMes += tempdata.toString()
-      // console.log(editedMes)
-
-      // if (buff) {
-      //   return
-      // }
-      // buff = true
-      // await h.sleep(1)
-      // buff = false
+      if (buff) {
+        return
+      }
+      buff = true
+      await h.sleep(2)
+      buff = false
       if (repeats > 10)
         return
       // console.log('st: ' + data)
       if (mid == 0) {
+
         mid = await ctx.reply("" + editedMes)
           .catch(() => { })
       }
@@ -77,7 +77,7 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         ctxx.deleteMessage().catch(() => { })
 
         try {
-          await cplus.stdin.write(ctxx.message.text + "\n")
+          await golang.stdin.write(ctxx.message.text + "\n")
         } catch (err: any) { console.log(err) }
         editedMes += ctxx.message.text + "\n"
         console.log('yes')
@@ -94,44 +94,36 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     h.sleep(ttl * 1000).then(() => {
       code = false
-      if (cplus) {
+      if (golang) {
         ctx.reply("Timout: " + ttl * 1000 + " Seconds")
         terminate()
         ctx.scene.leave()
       }
     })
 
-    fs.writeFileSync(`./files/cplus/cpt${fromId}cpt.cpp`, code);
 
-    const { status, stderr } = spawnSync('g++', ['-o', `./files/cplus/cpp${fromId}cpp.out`, `./files/cplus/cpt${fromId}cpt.cpp`]);
+  try{
+    fs.mkdirSync(`./files/golang/go${fromId}go/`);
+    } catch(err: any){}
+    
+    try{
+    fs.writeFileSync(`./files/golang/go${fromId}go/main.go`, code);
+    } catch(err: any){}
 
-    try {
-      fs.unlinkSync(`./files/cplus/cpt${fromId}cpt.cpp`);
-    } catch (err) { }
-
-
-    if (status != 0) {
-      terminate()
-      reply(stderr.toString())
-      return ctx.scene.leave()
-      // return console.error(stderr.toString());
-    } else {
-      // const { stdout } = spawnSync(`./files/cplus/cpp${fromId}cpp.out`);
-      // console.log(stdout.toString());
-    }
-
-    cplus = spawn(`./files/cplus/cpp${fromId}cpp.out`, [], {
+    golang = spawn(process.env.GO as any, ['run', `./files/golang/go${fromId}go/main.go`], {
       uid: 1000,
       gid: 1000,
-      chroot: './compilers/cplus',
+      // chroot: './compilers/golang',
       maxBuffer: 1024 * 1024, // 1 MB
-      env: {}
+        env: {
+    GOCACHE: `/home/runner/compilers/files/golang/go${fromId}go`,
+  },
     });
 
-    cplus.stdout.on('data', cppout);
+    golang.stdout.on('data', goout);
 
     let m = true
-    cplus.stderr.on('data', async (data: any) => {
+    golang.stderr.on('data', async (data: any) => {
 
       if (mid == 0 && m) {
         m = false
@@ -154,8 +146,8 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     });
 
     code = false
-    cplus.on("error", (err: any) => { console.log(err); terminate(); ctx.scene.leave() })
-    cplus.on('close', (code: any) => {
+    golang.on("error", (err: any) => { console.log(err); terminate(); ctx.scene.leave() })
+    golang.on('close', (code: any) => {
       if (code == 0) {
         reply('Program terminated successfully')
 
@@ -173,8 +165,9 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       })
         .catch((err: any) => { })
     }
-    return cplus
+    return golang
   } catch (errr: any) {
+    console.log(errr)
     ctx.reply("Some Error occoured")
       .then(async (mmm: any) => {
         await h.sleep(10000);
@@ -185,16 +178,16 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
   }
 }
 
-module.exports = cppyoyocpp
+module.exports = goyoyogo
 
 let terminate = async () => {
   buff = false
   mid = 0
-  if (cplus) {
-    cplus.removeAllListeners()
-    await cplus.kill("SIGKILL")
-    cplus = null
-    console.log(cplus)
+  if (golang) {
+    golang.removeAllListeners()
+    await golang.kill("SIGKILL")
+    golang = null
+    console.log(golang)
   }
   console.log('terminating...')
   if (ctxemitter)
@@ -206,21 +199,18 @@ let terminate = async () => {
   editedMes = "Output: \n"
 
   try {
-    if (fs.existsSync(`./files/cplus/cpp${fromId}cpp.out`)) {
-      fs.unlinkSync(`./files/cplus/cpp${fromId}cpp.out`);
+    if (fs.existsSync(`./files/golang/go${fromId}go/main.go`)) {
+      fs.unlinkSync(`./files/golang/go${fromId}go/main.go`);
     }
   } catch (err: any) { }
 
-  try {
-    if (fs.existsSync(`./files/cplus/cpt${fromId}cpt.cpp`)) {
-      fs.unlinkSync(`./files/cplus/cpt${fromId}cpt.cpp`);
-    }
-  } catch (err: any) { }
-
-
-  if (fs.existsSync(`./compilers/cplus/cpp${fromId}cpp.ts`)) {
+  try{
+  fs.rmSync(`./files/golang/go${fromId}go/`, { recursive: true });
+  } catch (err){}
+  
+  if (fs.existsSync(`./compilers/golang/go${fromId}go.ts`)) {
     try {
-      fs.unlinkSync(`./compilers/cplus/cpp${fromId}cpp.ts`)
+      fs.unlinkSync(`./compilers/golang/go${fromId}go.ts`)
     } catch (err: any) { }
   }
   await h.sleep(700)

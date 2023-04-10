@@ -1,5 +1,7 @@
 { pkgs }: {
     deps = [
+        pkgs.nano
+        pkgs.vim
         pkgs.python39Packages.pip
         pkgs.toybox
         pkgs.dotnet-sdk_5
@@ -8,6 +10,7 @@
         pkgs.jdk
         pkgs.mono5
         pkgs.python
+        pkgs.go
         pkgs.gcc
         pkgs.yarn
         pkgs.esbuild

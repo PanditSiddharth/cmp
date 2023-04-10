@@ -16,7 +16,7 @@ let javaFile: any;
 interface Opt {
   code?: any; ter?: Boolean; onlyTerminate?: boolean
 }
-let cpjvoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
+let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
   // obj = obj || {}
   let code = obj.code || false
   let ter = obj.ter || false
@@ -115,14 +115,14 @@ let cpjvoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       return ctx.scene.leave()
     }
 
-  try{
-    fs.mkdirSync(`./files/java/jv${fromId}jv/`);
-    } catch(err: any){}
-    
-    try{
-    fs.writeFileSync(`./files/java/jv${fromId}jv/${javaFile}.java`, code);
-    } catch(err: any){}
-    
+    try {
+      fs.mkdirSync(`./files/java/jv${fromId}jv/`);
+    } catch (err: any) { }
+
+    try {
+      fs.writeFileSync(`./files/java/jv${fromId}jv/${javaFile}.java`, code);
+    } catch (err: any) { }
+
     const { status, stderr } = spawnSync(process.env.JAVAC as any, [`./files/java/jv${fromId}jv/${javaFile}.java`]);
 
     // try {
@@ -139,7 +139,7 @@ let cpjvoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       // const { stdout } = spawnSync(`./files/java/jv${fromId}jv/${javaFile}.class`);
       // console.log(stdout.toString());
     }
- // ['-cp', '/path/to/compiled/class', 'Hello']
+    // ['-cp', '/path/to/compiled/class', 'Hello']
     java = spawn(process.env.JAVA as any, ['-cp', `./files/java/jv${fromId}jv/`, javaFile], {
       uid: 1000,
       gid: 1000,
@@ -206,7 +206,7 @@ let cpjvoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
   }
 }
 
-module.exports = cpjvoyojv
+module.exports = jvyoyojv
 
 let terminate = async () => {
   buff = false
@@ -238,10 +238,10 @@ let terminate = async () => {
     }
   } catch (err: any) { }
 
-  try{
-  fs.rmSync(`./files/java/jv${fromId}jv/`, { recursive: true });
-  } catch (err){}
-  
+  try {
+    fs.rmSync(`./files/java/jv${fromId}jv/`, { recursive: true });
+  } catch (err) { }
+
   if (fs.existsSync(`./compilers/java/jv${fromId}jv.ts`)) {
     try {
       fs.unlinkSync(`./compilers/java/jv${fromId}jv.ts`)

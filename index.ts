@@ -6,6 +6,7 @@ import pyStarter from './starters/pystarter'
 import jsStarter from './starters/jsstarter'
 import cppStarter from './starters/cppstarter'
 import jvStarter from './starters/jvstarter'
+import goStarter from './starters/gostarter'
 // let c = require('./compilers/c');
 let cpp = require('./compilers/cpp');
 keep_alive()
@@ -41,23 +42,27 @@ codeScene.on("message", async (ctx: any, next: any) => {
 
 
 let pyScene = new Scenes.BaseScene<Scenes.SceneContext>("py");
-pyScene.enter(async (ctx: any)=> {await pyStarter(bot, ctx)});
-pyScene.on("message",async (ctx: any)=> {await pyStarter(bot, ctx)});
+pyScene.enter(async (ctx: any) => { await pyStarter(bot, ctx) });
+pyScene.on("message", async (ctx: any) => { await pyStarter(bot, ctx) });
 
 let cppScene = new Scenes.BaseScene<Scenes.SceneContext>("cpp");
-cppScene.enter(async (ctx: any)=> {await cppStarter(bot, ctx)});
-cppScene.on("message",async (ctx: any)=> {await cppStarter(bot, ctx)});
+cppScene.enter(async (ctx: any) => { await cppStarter(bot, ctx) });
+cppScene.on("message", async (ctx: any) => { await cppStarter(bot, ctx) });
 
 let jvScene = new Scenes.BaseScene<Scenes.SceneContext>("jv");
-jvScene.enter(async (ctx: any)=> {await jvStarter(bot, ctx)});
-jvScene.on("message",async (ctx: any)=> {await jvStarter(bot, ctx)});
+jvScene.enter(async (ctx: any) => { await jvStarter(bot, ctx) });
+jvScene.on("message", async (ctx: any) => { await jvStarter(bot, ctx) });
 
 let jsScene = new Scenes.BaseScene<Scenes.SceneContext>("js");
-jsScene.enter(async (ctx: any)=> {await jsStarter(bot, ctx)});
-jsScene.on("message",async (ctx: any)=> {await jsStarter(bot, ctx)});
+jsScene.enter(async (ctx: any) => { await jsStarter(bot, ctx) });
+jsScene.on("message", async (ctx: any) => { await jsStarter(bot, ctx) });
+
+let goScene = new Scenes.BaseScene<Scenes.SceneContext>("go");
+goScene.enter(async (ctx: any) => { await goStarter(bot, ctx) });
+goScene.on("message", async (ctx: any) => { await goStarter(bot, ctx) });
 
 let bot = new Telegraf<Scenes.SceneContext>(process.env.TOKEN as any);
-let stage = new Scenes.Stage<Scenes.SceneContext>([codeScene, pyScene, jsScene, cppScene, jvScene], { ttl: 40 });
+let stage = new Scenes.Stage<Scenes.SceneContext>([codeScene, pyScene, jsScene, cppScene, jvScene, goScene], { ttl: 40 });
 bt(bot)
 bot.use(session());
 bot.use(stage.middleware());
@@ -65,16 +70,18 @@ bot.command("code", (ctx: any) => {
   ctx.scene.enter("code")
 });
 
-bot.hears(/^\/(code|py|python|js|node|c|cpp|cplus|jv|java|c\+\+)/i, (ctx: any) => {
+bot.hears(/^\/(code|py|python|js|node|c|cpp|cplus|go|jv|java|c\+\+)/i, (ctx: any) => {
   let compiler: any = ctx.message.text + "";
   if ((/^\/(py|python)/i).test(compiler))
     ctx.scene.enter("py")
   else if ((/^\/(js|node)/i).test(compiler))
     ctx.scene.enter("js")
-    else if ((/^\/(cpp|cplus)/i).test(compiler))
+  else if ((/^\/(cpp|cplus)/i).test(compiler))
     ctx.scene.enter("cpp")
-      else if ((/^\/(jv|java)/i).test(compiler))
+  else if ((/^\/(jv|java)/i).test(compiler))
     ctx.scene.enter("jv")
+  else if ((/^\/go/i).test(compiler))
+    ctx.scene.enter("go")
 })
 
 bot.launch({ dropPendingUpdates: true });

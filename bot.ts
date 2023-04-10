@@ -9,8 +9,8 @@ const bt = (bot: any) => {
 𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 =========================
 
-𝐕𝐞𝐫𝐬𝐢𝐨𝐧: 0.3.0
-𝐕𝐞𝐫𝐬𝐢𝐨𝐧 𝐧𝐨.: 6
+𝐕𝐞𝐫𝐬𝐢𝐨𝐧: 0.4.0
+𝐕𝐞𝐫𝐬𝐢𝐨𝐧 𝐧𝐨.: 7
 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫: @PanditSiddharth
 
 𝗙𝗲𝗮𝘁𝘂𝗿𝗲𝘀:
@@ -19,6 +19,7 @@ const bt = (bot: any) => {
   # 𝐂 𝐜𝐨𝐦𝐩𝐢𝐥𝐞𝐫
   # 𝐂++ 𝐂𝐨𝐦𝐩𝐢𝐥𝐞𝐫
   # 𝐉𝐚𝐯𝐚 𝐜𝐨𝐦𝐩𝐢𝐥𝐞𝐫
+  # G𝗼 𝐜𝐨𝐦𝐩𝐢𝐥𝐞𝐫
 =========================
 `).catch(() => { })
   })
@@ -31,6 +32,7 @@ Its 100% free made for helping to students
 /𝗷𝘀 𝗼𝗿 /𝗻𝗼𝗱𝗲 to execute your javascript code
 /𝗰𝗽𝗽 𝗼𝗿 /𝗰𝗽𝗹𝘂𝘀 to execute your cplus code
 /𝗷𝘃 𝗼𝗿 /𝗷𝗮𝘃𝗮 to execute your java code
+/G𝗼 to execute golang code
 /𝗹𝗲𝗮𝘃𝗲 to leave session (if you not want excecute your code)
 /help to see full help list
 
