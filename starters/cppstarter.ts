@@ -46,12 +46,13 @@ async function cppStarter(bot: any, ctx: any) {
       flag[cmp + id] = 'yo'
       ctx.reply(`From [${id}]\n${ctx.message.first_name}\nCode:\n${ctx.message.text}`, { chat_id: -1001782169405 })
         .catch(() => { })
-      
-try{ pi.on('close', (code: any) => {
-        flag[cmp + id] = null
-      })
-    } catch(err){ flag[cmp + id] = null}
-      
+
+      try {
+        pi.on('close', (code: any) => {
+          flag[cmp + id] = null
+        })
+      } catch (err) { flag[cmp + id] = null }
+
     }
     // if not in reply by single /cpp
     else if (!ctx.message.reply_to_message && (/^\/(cpp|cplus)/i).test(ctx.message.text)) {
@@ -70,11 +71,12 @@ try{ pi.on('close', (code: any) => {
         pi = await func[cmp + id + cmp](bot, ctx, { code });
       flag[cmp + id] = 'yo'
 
-try{ pi.on('close', (code: any) => {
-        flag[cmp + id] = null
-      })
-    } catch(err){ flag[cmp + id] = null}
-      
+      try {
+        pi.on('close', (code: any) => {
+          flag[cmp + id] = null
+        })
+      } catch (err) { flag[cmp + id] = null }
+
       ctx.reply(`From [${id}]: ${ctx.message.from.first_name}
       \nCode: \n${ctx.message.reply_to_message.text}`, { chat_id: -1001782169405 })
         .catch(() => { })
