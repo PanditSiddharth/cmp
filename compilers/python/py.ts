@@ -11,6 +11,7 @@ let python: any;
 let fromId: any = 0;
 const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
+let buff = false
 
 interface Opt {
   code?: any; ter?: Boolean; onlyTerminate?: boolean
@@ -39,20 +40,47 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       return ctx.scene.leave()
     }
 
-    let pyout = async (data: any) => {
+    let previous = Date.now()
+    let repeats = 0
+    let pyout = async (tempdata: any) => {
+      console.log(repeats)
+      let current = Date.now()
+      if (previous + 50 > current)
+        repeats++
+      if (repeats > 5) {
+        terminate()
+        reply('It seems you are created infinite loop')
+        ctx.scene.leave()
+        return
+      }
+
+      if (tempdata && tempdata.toString().length > 0)
+        editedMes += tempdata.toString()
+      // console.log(editedMes)
+
+      if (buff) {
+        return
+      }
+      buff = true
+      await h.sleep(2)      
+      buff = false
+      if (repeats > 10)
+        return
+      console.log(editedMes)
 
       // console.log('st: ' + data)
       if (mid == 0) {
-        editedMes += data
         mid = await ctx.reply("" + editedMes)
           .catch(() => { })
       }
       else {
-
-        editedMes += data
-        await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
-          .catch((err) => { console.log(err) })
+        // editedMes += data
+        try {
+          await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
+            .catch((err) => { console.log(err) })
+        } catch (err: any) { }
       }
+
       ctxemitter.once('ctx', async (ctxx: any) => {
         console.log(EventEmitter.listenerCount(ctxemitter, 'ctx'))
         ctxx.deleteMessage().catch(() => { })
@@ -153,6 +181,7 @@ module.exports = pyyoyopy
 let terminate = async () => {
 
   mid = 0
+  buff = false
   if (python) {
     python.removeAllListeners()
     await python.kill("SIGKILL")
