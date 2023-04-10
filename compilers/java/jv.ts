@@ -7,15 +7,16 @@ let h = new Hlp();
 const EventEmitter = require('events');
 let mid: any = 0;
 let editedMes: any = "Output: \n"
-let cplus: any;
+let java: any;
 let fromId: any = 0;
 const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
 let buff = false
+let javaFile: any;
 interface Opt {
   code?: any; ter?: Boolean; onlyTerminate?: boolean
 }
-let cpcppoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
+let cpjvoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
   // obj = obj || {}
   let code = obj.code || false
   let ter = obj.ter || false
@@ -41,7 +42,7 @@ let cpcppoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     let previous = Date.now()
     let repeats = 0
-    let cppout = async (tempdata: any) => {
+    let jvout = async (tempdata: any) => {
       let current = Date.now()
       if (previous + 30 > current)
         repeats++
@@ -64,13 +65,11 @@ let cpcppoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         return
       // console.log('st: ' + data)
       if (mid == 0) {
-        editedMes += data
+
         mid = await ctx.reply("" + editedMes)
           .catch(() => { })
       }
       else {
-
-        editedMes += data
         await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           .catch((err) => { console.log(err) })
       }
@@ -80,7 +79,7 @@ let cpcppoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         ctxx.deleteMessage().catch(() => { })
 
         try {
-          await cplus.stdin.write(ctxx.message.text + "\n")
+          await java.stdin.write(ctxx.message.text + "\n")
         } catch (err: any) { console.log(err) }
         editedMes += ctxx.message.text + "\n"
         console.log('yes')
@@ -97,20 +96,38 @@ let cpcppoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     h.sleep(ttl * 1000).then(() => {
       code = false
-      if (cplus) {
+      if (java) {
         ctx.reply("Timout: " + ttl * 1000 + " Seconds")
         terminate()
         ctx.scene.leave()
       }
     })
 
-    fs.writeFileSync(`./files/cplus/cpt${fromId}cpt.cpp`, code);
 
-    const { status, stderr } = spawnSync('g++', ['-o', `./files/cplus/cpp${fromId}cpp.out`, `./files/cplus/cpt${fromId}cpt.cpp`]);
+    const regex = /(?<=\bpublic\s+class\s+)(\w+)\s*\{\s*public\s+static\s+void\s+main\s*\(\s*String\[\]\s+\w*\s*\)\s*\{/m;
+    const match = code.match(regex)
+    if (match) {
+      javaFile = match[1];
+      console.log('Found main class:' + javaFile);
+    } else {
+      terminate()
+      console.log('No main class found.');
+      return ctx.scene.leave()
+    }
 
-    try {
-      fs.unlinkSync(`./files/cplus/cpt${fromId}cpt.cpp`);
-    } catch (err) { }
+  try{
+    fs.mkdirSync(`./files/java/jv${fromId}jv/`);
+    } catch(err: any){}
+    
+    try{
+    fs.writeFileSync(`./files/java/jv${fromId}jv/${javaFile}.java`, code);
+    } catch(err: any){}
+    
+    const { status, stderr } = spawnSync(process.env.JAVAC as any, [`./files/java/jv${fromId}jv/${javaFile}.java`]);
+
+    // try {
+    //   fs.unlinkSync(`./files/java/jv${fromId}jv/${javaFile}.java`);
+    // } catch (err) { }
 
 
     if (status != 0) {
@@ -119,22 +136,22 @@ let cpcppoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       return ctx.scene.leave()
       // return console.error(stderr.toString());
     } else {
-      // const { stdout } = spawnSync(`./files/cplus/cpp${fromId}cpp.out`);
+      // const { stdout } = spawnSync(`./files/java/jv${fromId}jv/${javaFile}.class`);
       // console.log(stdout.toString());
     }
-
-    cplus = spawn(`./files/cplus/cpp${fromId}cpp.out`, [], {
+ // ['-cp', '/path/to/compiled/class', 'Hello']
+    java = spawn(process.env.JAVA as any, ['-cp', `./files/java/jv${fromId}jv/`, javaFile], {
       uid: 1000,
       gid: 1000,
-      chroot: './compilers/cplus',
+      chroot: './compilers/java',
       maxBuffer: 1024 * 1024, // 1 MB
       env: {}
     });
 
-    cplus.stdout.on('data', cppout);
+    java.stdout.on('data', jvout);
 
     let m = true
-    cplus.stderr.on('data', async (data: any) => {
+    java.stderr.on('data', async (data: any) => {
 
       if (mid == 0 && m) {
         m = false
@@ -157,8 +174,8 @@ let cpcppoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     });
 
     code = false
-    cplus.on("error", (err: any) => { console.log(err); terminate(); ctx.scene.leave() })
-    cplus.on('close', (code: any) => {
+    java.on("error", (err: any) => { console.log(err); terminate(); ctx.scene.leave() })
+    java.on('close', (code: any) => {
       if (code == 0) {
         reply('Program terminated successfully')
 
@@ -176,8 +193,9 @@ let cpcppoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       })
         .catch((err: any) => { })
     }
-    return cplus
+    return java
   } catch (errr: any) {
+    console.log(errr)
     ctx.reply("Some Error occoured")
       .then(async (mmm: any) => {
         await h.sleep(10000);
@@ -188,16 +206,16 @@ let cpcppoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
   }
 }
 
-module.exports = cpcppoyocpp
+module.exports = cpjvoyojv
 
 let terminate = async () => {
   buff = false
   mid = 0
-  if (cplus) {
-    cplus.removeAllListeners()
-    await cplus.kill("SIGKILL")
-    cplus = null
-    console.log(cplus)
+  if (java) {
+    java.removeAllListeners()
+    await java.kill("SIGKILL")
+    java = null
+    console.log(java)
   }
   console.log('terminating...')
   if (ctxemitter)
@@ -209,21 +227,24 @@ let terminate = async () => {
   editedMes = "Output: \n"
 
   try {
-    if (fs.existsSync(`./files/cplus/cpp${fromId}cpp.out`)) {
-      fs.unlinkSync(`./files/cplus/cpp${fromId}cpp.out`);
+    if (fs.existsSync(`./files/java/jv${fromId}jv/${javaFile}.class`)) {
+      fs.unlinkSync(`./files/java/jv${fromId}jv/${javaFile}.class`);
     }
   } catch (err: any) { }
 
   try {
-    if (fs.existsSync(`./files/cplus/cpt${fromId}cpt.cpp`)) {
-      fs.unlinkSync(`./files/cplus/cpt${fromId}cpt.cpp`);
+    if (fs.existsSync(`./files/java/jv${fromId}jv/${javaFile}.java`)) {
+      fs.unlinkSync(`./files/java/jv${fromId}jv/${javaFile}.java`);
     }
   } catch (err: any) { }
 
-
-  if (fs.existsSync(`./compilers/cplus/cpp${fromId}cpp.ts`)) {
+  try{
+  fs.rmSync(`./files/java/jv${fromId}jv/`, { recursive: true });
+  } catch (err){}
+  
+  if (fs.existsSync(`./compilers/java/jv${fromId}jv.ts`)) {
     try {
-      fs.unlinkSync(`./compilers/cplus/cpp${fromId}cpp.ts`)
+      fs.unlinkSync(`./compilers/java/jv${fromId}jv.ts`)
     } catch (err: any) { }
   }
   await h.sleep(700)

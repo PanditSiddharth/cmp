@@ -43,9 +43,9 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     let previous = Date.now()
     let repeats = 0
     let pyout = async (tempdata: any) => {
-      console.log(repeats)
+
       let current = Date.now()
-      if (previous + 50 > current)
+      if (previous + 30 > current)
         repeats++
       if (repeats > 5) {
         terminate()
@@ -53,20 +53,17 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         ctx.scene.leave()
         return
       }
-
-      if (tempdata && tempdata.toString().length > 0)
-        editedMes += tempdata.toString()
+      editedMes += tempdata.toString()
       // console.log(editedMes)
 
       if (buff) {
         return
       }
       buff = true
-      await h.sleep(2)      
+      await h.sleep(2)
       buff = false
       if (repeats > 10)
         return
-      console.log(editedMes)
 
       // console.log('st: ' + data)
       if (mid == 0) {

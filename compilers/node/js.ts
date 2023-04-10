@@ -11,7 +11,7 @@ let node: any;
 let fromId: any = 0;
 const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
-
+let buff = false
 interface Opt {
   code?: any; ter?: Boolean; onlyTerminate?: boolean
 }
@@ -38,18 +38,38 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       terminate()
       return ctx.scene.leave()
     }
+    let previous = Date.now()
+    let repeats = 0
+    let jsout = async (tempdata: any) => {
 
-    let jsout = async (data: any) => {
+      let current = Date.now()
+      if (previous + 30 > current)
+        repeats++
+      if (repeats > 5) {
+        terminate()
+        reply('It seems you are created infinite loop')
+        ctx.scene.leave()
+        return
+      }
+      editedMes += tempdata.toString()
+      // console.log(editedMes)
 
-      console.log('st: ' + data)
+      if (buff) {
+        return
+      }
+      buff = true
+      await h.sleep(2)
+      buff = false
+      if (repeats > 10)
+        return
+
       if (mid == 0) {
-        editedMes += data
+
         mid = await ctx.reply("" + editedMes)
           .catch(() => { })
       }
       else {
 
-        editedMes += data
         await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           .catch((err) => { console.log(err) })
       }
@@ -153,6 +173,7 @@ module.exports = jsyoyojs
 let terminate = async () => {
 
   mid = 0
+  buff = false
   if (node) {
     node.removeAllListeners()
     await node.kill("SIGKILL")

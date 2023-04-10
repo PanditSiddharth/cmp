@@ -7,7 +7,7 @@
         pkgs.lsof
         pkgs.jdk
         pkgs.mono5
-        pkgs.python39
+        pkgs.python
         pkgs.gcc
         pkgs.yarn
         pkgs.esbuild
