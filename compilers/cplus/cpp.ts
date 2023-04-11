@@ -41,6 +41,7 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     let previous = Date.now()
     let repeats = 0
+    let first = true
     let cppout = async (tempdata: any) => {
       let current = Date.now()
       if (previous + 30 > current)
@@ -54,13 +55,15 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       editedMes += tempdata.toString()
       // console.log(editedMes)
 
-      // if (buff) {
-      //   return
-      // }
-      // buff = true
-      // await h.sleep(1)
-      // buff = false
-      if (repeats > 10)
+       if (buff) {
+       return
+       }
+       buff = true
+      if(!first)
+       await h.sleep(20)
+       buff = false
+      first = false
+      if (repeats > 4)
         return
       // console.log('st: ' + data)
       if (mid == 0) {

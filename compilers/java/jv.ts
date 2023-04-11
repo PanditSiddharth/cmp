@@ -57,11 +57,11 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
       if (buff) {
         return
-      }
-      buff = true
+     }
+     buff = true
       await h.sleep(2)
       buff = false
-      if (repeats > 10)
+      if (repeats > 5)
         return
       // console.log('st: ' + data)
       if (mid == 0) {
