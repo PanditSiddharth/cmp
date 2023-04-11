@@ -64,9 +64,13 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         return
 
       if (mid == 0) {
-
         mid = await ctx.reply("" + editedMes)
-          .catch(() => { })
+          .catch((err: any) => {
+            if (err.message.includes('too long')) {
+              reply('message is too long')
+              terminate(false)
+              ctx.scene.leave()
+            } })
       }
       else {
 
@@ -164,14 +168,15 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         ctx.deleteMessage(mmm.message_id).catch(() => { })
       }).catch(() => { })
     ctx.scene.leave();
-    terminate()
+    terminate(false)
   }
 }
 
 module.exports = jsyoyojs
 
-let terminate = async () => {
-
+let terminate = async (slow = true) => {
+if(slow)
+  await h.sleep(200)
   mid = 0
   buff = false
   if (node) {

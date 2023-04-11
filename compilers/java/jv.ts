@@ -65,9 +65,13 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         return
       // console.log('st: ' + data)
       if (mid == 0) {
-
         mid = await ctx.reply("" + editedMes)
-          .catch(() => { })
+          .catch((err: any) => {
+            if (err.message.includes('too long')) {
+              reply('message is too long')
+              terminate(false)
+              ctx.scene.leave()
+            } })
       }
       else {
         await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
@@ -208,7 +212,9 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
 module.exports = jvyoyojv
 
-let terminate = async () => {
+let terminate = async (slow = true) => {
+  if(slow)
+  await h.sleep(200)
   buff = false
   mid = 0
   if (java) {

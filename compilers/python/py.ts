@@ -43,7 +43,6 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     let previous = Date.now()
     let repeats = 0
     let pyout = async (tempdata: any) => {
-
       let current = Date.now()
       if (previous + 30 > current)
         repeats++
@@ -54,7 +53,7 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         return
       }
       editedMes += tempdata.toString()
-      // console.log(editedMes)
+      console.log("yaha se start: " + editedMes)
 
       if (buff) {
         return
@@ -62,13 +61,18 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       buff = true
       await h.sleep(2)
       buff = false
-      if (repeats > 10)
+      if (repeats > 5)
         return
 
       // console.log('st: ' + data)
       if (mid == 0) {
         mid = await ctx.reply("" + editedMes)
-          .catch(() => { })
+          .catch((err: any) => {
+            if (err.message.includes('too long')) {
+              reply('message is too long')
+              terminate(false)
+              ctx.scene.leave()
+            } })
       }
       else {
         // editedMes += data
@@ -138,7 +142,7 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
       await h.sleep(10)
       ctx.scene.leave();
-      terminate()
+      terminate(false)
     });
 
     code = false
@@ -175,8 +179,9 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
 module.exports = pyyoyopy
 
-let terminate = async () => {
-
+let terminate = async (slow: any = true) => {
+if(slow)
+  await h.sleep(300)
   mid = 0
   buff = false
   if (python) {

@@ -16,13 +16,23 @@ int result = vscanf(format, args);
 va_end(args);
 return result;
 }
-int main() {
-int i = 1;  // starting value
-int sum = 0;  // initialize sum to 0
-while (i <= 100) {  // we'll add up the first 100 terms
-sum += i;
-i += 3;  // increase i by 3 each iteration to get to the next term
+void convertMillisecondsToTime(long long int milliseconds) {
+// 1 hour = 3600000 milliseconds
+// 1 minute = 60000 milliseconds
+// 1 second = 1000 milliseconds
+int hours, minutes, seconds;
+// Convert the milliseconds to hours, minutes, and seconds
+seconds = (int) (milliseconds / 1000) % 60;
+minutes = (int) ((milliseconds / (1000*60)) % 60);
+hours   = (int) ((milliseconds / (1000*60*60)) % 24);
+// Print the result in hh:mm:ss format
+printt("%02d:%02d:%02dn", hours, minutes, seconds);
 }
-printt("The sum of the series is: %dn", sum);
+int main() {
+long long int milliseconds;
+printt("Enter the time in milliseconds: ");
+scann("%lld", &milliseconds);
+printt("The time in the format hh:mm:ss is: ");
+convertMillisecondsToTime(milliseconds);
 return 0;
 }
