@@ -43,7 +43,7 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     let repeats = 0
     let looperr = false
     let jsout = async (tempdata: any) => {
-
+      console.log(tempdata.toString())
       let current = Date.now()
       if (previous + 30 > current)
         repeats++
@@ -214,22 +214,22 @@ let terminate = async (slow: any = true) => {
 firstlistener = false
 
   try {
-  node.stdin.pause()
-    exec(`kill -1 ${node.pid}`)
+  // node.stdin.pause()
+    exec(`killall -9 -g ${node.pid}`, {shell: true})
   node.removeAllListeners()
     console.log(node.pid)
-  kill(node.pid, "SIGTERM")  
+  kill(node.pid, "SIGKILL")  
   } catch (error: any) {
     console.log(error.mesage)
   }
   mid = 0
   buff = false
-  // if (node) {
-  //   // node.removeAllListeners()
-  //   await node.kill("SIGINT")
-  //   node = null
-  //   console.log(node)
-  // }
+  if (node) {
+    node.removeAllListeners()
+    await node.kill("SIGKILL")
+    node = null
+    console.log(node)
+  }
   console.log('terminating...')
   if (ctxemitter)
     ctxemitter.removeAllListeners()

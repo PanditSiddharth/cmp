@@ -1,6 +1,9 @@
 import { Telegraf, Context } from "telegraf";
+import axios from "axios"
 
 import mdb from "./db";
+import Hlp from './helpers'
+let h = new Hlp()
 const bt = (bot: any) => {
   const fs = require('fs');
   const filePath = './data.txt';
@@ -130,8 +133,6 @@ Its 100% free made for helping to students
     }, 2000)
   })
 
-
-
   bot.hears(/^\/sendtask/i, (ctx: Context) => {
     let msg: any = ctx.message
     if (!msg.reply_to_message)
@@ -146,6 +147,67 @@ Its 100% free made for helping to students
     }).catch((err: any) => { })
   })
 
+async function reply(ctx: any, msg: any, tim: number = 10, mode: any = null ){
+  ctx.reply(msg, {parse_mode: mode})
+  .then(async (ms: any) => {await h.sleep(tim * 1000); return ms;})
+  .then(async (ms: any) => {ctx.deleteMessage(ms.message_id)})
+  .catch((err: any)=> {})
+}
+
+bot.hears(/^\/inf/i, async (ctx: any)=> {
+  let msg : any = ctx.message
+  let id : any ;
+  let match : any = ctx.message.text.match(/@[a-zA-Z0-9_]+/)
+  if(!match)
+    return reply(ctx, 'Seems you are not given username')
+  
+  id = (await axios.get(`https://tguname.panditsiddharth.repl.co/${match[0]}`)).data
+  
+  if(id.className == 'User'){
+    reply(ctx, `
+id : \`${id.id}\`
+username: ${match[0]}
+firstName: ${id.firstName}${id.lastName ? "\nlastName: " + id.lastName : ""}
+premium: ${id.premium ? "Yes": 'No'}
+restricted: ${id.restricted ? "Yes": 'No'}
+deleted: ${id.deleted ? "Yes": 'No'}
+isBot: ${id.bot ? "Yes": 'No'}
+`, 60)
+    }
+else if(id.className == 'Channel'){
+    reply(ctx, `
+id : \`${"-100" + id.id}\`
+username: *${match[0]}*
+title: ${id.title}
+supergroup: ${id.megagroup ? "Yes": 'No'}
+restricted: ${id.restricted ? "Yes": 'No'}
+`, 60, 'Markdown')}
+else {
+  reply(ctx, 'User or Chat not found')
+}
+})
+  
+  
+bot.hears(/^\/sendTo/i, (ctx: Context)=> {
+  let msg: any = ctx.message
+
+  if(!list.includes(msg.from.id))
+     return reply(ctx, 'You are not allowed')
+  
+  if(!msg.reply_to_message)
+    return reply(ctx, 'Please reply to message')
+
+  let match: any = ("" + msg.text).match(/[-]?\d{9,14}/)
+  // console.log(match)
+
+ if(!match)
+   return reply(ctx, "Please give id where to send text")
+let ctxx: any = ctx
+  bot.telegram.sendMessage(match[0], msg.reply_to_message.text)
+ .catch((err: any)=> {reply(ctx, err.message)})
+  reply(ctx, "message successfully sent", 60)
+})
+    
   // bot.command('auths', async (ctx: any) => {
   // try {
   //   let mess = 'Auth Users\n'
