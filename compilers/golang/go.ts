@@ -13,6 +13,7 @@ const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
 let buff = false
 let goFile: any;
+let firstlistener = true
 interface Opt {
   code?: any; ter?: Boolean; onlyTerminate?: boolean
 }
@@ -42,12 +43,13 @@ let goyoyogo = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     let previous = Date.now()
     let repeats = 0
+    let looperr = true
     let goout = async (tempdata: any) => {
       let current = Date.now()
       if (previous + 30 > current)
         repeats++
-      if (repeats > 5) {
-        terminate()
+       if (repeats > 5 && !looperr) {
+        terminate(false)
         reply('It seems you are created infinite loop')
         ctx.scene.leave()
         return
@@ -75,16 +77,20 @@ let goyoyogo = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           .catch((err) => { console.log(err) })
       }
-      ctxemitter.once('ctx', async (ctxx: any) => {
-        ctxemitter.removeAllListeners()
-        console.log(EventEmitter.listenerCount(ctxemitter, 'ctx'))
+      if (!firstlistener)
+        return
+        firstlistener = false
+      ctxemitter.on('ctx', async (ctxx: any) => {
         ctxx.deleteMessage().catch(() => { })
-
         try {
+        editedMes += ctxx.message.text + "\n"
+          if(mid == 0)
+         mid = await ctx.reply("" + editedMes)
+          else
+    await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           await golang.stdin.write(ctxx.message.text + "\n")
         } catch (err: any) { console.log(err) }
-        editedMes += ctxx.message.text + "\n"
-        console.log('yes')
+   
       });
     }
 
@@ -99,8 +105,8 @@ let goyoyogo = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     h.sleep(ttl * 1000).then(() => {
       code = false
       if (golang) {
-        ctx.reply("Timout: " + ttl * 1000 + " Seconds")
-        terminate()
+        ctx.reply("Timout: " + ttl + " Seconds")
+        terminate(false)
         ctx.scene.leave()
       }
     })
@@ -178,15 +184,49 @@ let goyoyogo = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         ctx.deleteMessage(mmm.message_id).catch(() => { })
       }).catch(() => { })
     ctx.scene.leave();
-    terminate()
+    terminate(false)
   }
 }
 
 module.exports = goyoyogo
 
-let terminate = async (slow = true) => {
+var psTree = require('ps-tree');
+
+var kill = function (pid: any, signal?: any, callback?: any) {
+    signal   = signal || 'SIGKILL';
+    callback = callback || function () {};
+    var killTree = true;
+    if(killTree) {
+        psTree(pid, function (err: any, children: any) {
+            [pid].concat(
+                children.map(function (p: any) {
+                    return p.PID;
+                })
+            ).forEach(function (tpid) {
+                try { process.kill(tpid, signal) }
+                catch (ex) { }
+            });
+            callback();
+        });
+    } else {
+        try { process.kill(pid, signal) }
+        catch (ex) { }
+        callback();
+    }
+};
+
+
+
+let terminate = async (slow: any = true) => {
   if(slow)
   await h.sleep(200)
+firstlistener = false
+
+  try {
+  golang.removeAllListeners()
+  kill(golang.pid)  
+  } catch (error) {
+  }
   buff = false
   mid = 0
   if (golang) {

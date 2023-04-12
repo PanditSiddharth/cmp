@@ -13,6 +13,8 @@ const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
 let buff = false
 let javaFile: any;
+let firstlistener = true
+
 interface Opt {
   code?: any; ter?: Boolean; onlyTerminate?: boolean
 }
@@ -42,12 +44,14 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     let previous = Date.now()
     let repeats = 0
+    let looperr = false
     let jvout = async (tempdata: any) => {
       let current = Date.now()
       if (previous + 30 > current)
         repeats++
-      if (repeats > 5) {
-        terminate()
+      if (repeats > 5 && !looperr) {
+        looperr = true
+        terminate(false)
         reply('It seems you are created infinite loop')
         ctx.scene.leave()
         return
@@ -77,16 +81,20 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           .catch((err) => { console.log(err) })
       }
-      ctxemitter.once('ctx', async (ctxx: any) => {
-        ctxemitter.removeAllListeners()
-        console.log(EventEmitter.listenerCount(ctxemitter, 'ctx'))
+      if (!firstlistener)
+        return
+        firstlistener = false
+      ctxemitter.on('ctx', async (ctxx: any) => {
         ctxx.deleteMessage().catch(() => { })
-
         try {
+        editedMes += ctxx.message.text + "\n"
+          if(mid == 0)
+         mid = await ctx.reply("" + editedMes)
+          else
+    await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           await java.stdin.write(ctxx.message.text + "\n")
         } catch (err: any) { console.log(err) }
-        editedMes += ctxx.message.text + "\n"
-        console.log('yes')
+   
       });
     }
 
@@ -101,7 +109,7 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     h.sleep(ttl * 1000).then(() => {
       code = false
       if (java) {
-        ctx.reply("Timout: " + ttl * 1000 + " Seconds")
+        ctx.reply("Timout: " + ttl + " Seconds")
         terminate()
         ctx.scene.leave()
       }
@@ -114,7 +122,7 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       javaFile = match[1];
       console.log('Found main class:' + javaFile);
     } else {
-      terminate()
+      terminate(false)
       console.log('No main class found.');
       return ctx.scene.leave()
     }
@@ -174,7 +182,7 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
       await h.sleep(10)
       ctx.scene.leave();
-      terminate()
+      terminate(false)
     });
 
     code = false
@@ -212,9 +220,43 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
 module.exports = jvyoyojv
 
-let terminate = async (slow = true) => {
+var psTree = require('ps-tree');
+
+var kill = function (pid: any, signal?: any, callback?: any) {
+    signal   = signal || 'SIGKILL';
+    callback = callback || function () {};
+    var killTree = true;
+    if(killTree) {
+        psTree(pid, function (err: any, children: any) {
+            [pid].concat(
+                children.map(function (p: any) {
+                    return p.PID;
+                })
+            ).forEach(function (tpid) {
+                try { process.kill(tpid, signal) }
+                catch (ex) { }
+            });
+            callback();
+        });
+    } else {
+        try { process.kill(pid, signal) }
+        catch (ex) { }
+        callback();
+    }
+};
+
+
+
+let terminate = async (slow: any = true) => {
   if(slow)
   await h.sleep(200)
+firstlistener = false
+
+  try {
+  java.removeAllListeners()
+  kill(java.pid)  
+  } catch (error) {
+  }
   buff = false
   mid = 0
   if (java) {

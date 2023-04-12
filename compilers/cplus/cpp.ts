@@ -12,6 +12,7 @@ let fromId: any = 0;
 const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
 let buff = false
+let firstlistener = true
 interface Opt {
   code?: any; ter?: Boolean; onlyTerminate?: boolean
 }
@@ -42,24 +43,29 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     let previous = Date.now()
     let repeats = 0
     let first = true
+    let looperr = true
     let cppout = async (tempdata: any) => {
       let current = Date.now()
       if (previous + 30 > current)
         repeats++
-      if (repeats > 5) {
-        terminate()
+     if (repeats > 5 && !looperr) {
+       let looperr = true
+        terminate(false)
         reply('It seems you are created infinite loop')
         ctx.scene.leave()
         return
       }
+      
       editedMes += tempdata.toString()
-      // console.log(editedMes)
+      console.log(editedMes)
 
        if (buff) {
        return
        }
        buff = true
-      if(!first)
+      if(first)
+       await h.sleep(5)
+        else
        await h.sleep(20)
        buff = false
       first = false
@@ -79,16 +85,20 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           .catch((err) => { console.log(err) })
       }
-      ctxemitter.once('ctx', async (ctxx: any) => {
-        ctxemitter.removeAllListeners()
-        console.log(EventEmitter.listenerCount(ctxemitter, 'ctx'))
+      if (!firstlistener)
+        return
+        firstlistener = false
+      ctxemitter.on('ctx', async (ctxx: any) => {
         ctxx.deleteMessage().catch(() => { })
-
         try {
+        editedMes += ctxx.message.text + "\n"
+          if(mid == 0)
+         mid = await ctx.reply("" + editedMes)
+          else
+    await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           await cplus.stdin.write(ctxx.message.text + "\n")
         } catch (err: any) { console.log(err) }
-        editedMes += ctxx.message.text + "\n"
-        console.log('yes')
+   
       });
     }
 
@@ -103,8 +113,8 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     h.sleep(ttl * 1000).then(() => {
       code = false
       if (cplus) {
-        ctx.reply("Timout: " + ttl * 1000 + " Seconds")
-        terminate()
+        ctx.reply("Timout: " + ttl + " Seconds")
+        terminate(false)
         ctx.scene.leave()
       }
     })
@@ -119,7 +129,7 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
 
     if (status != 0) {
-      terminate()
+      terminate(false)
       reply(stderr.toString())
       return ctx.scene.leave()
       // return console.error(stderr.toString());
@@ -162,7 +172,7 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     });
 
     code = false
-    cplus.on("error", (err: any) => { console.log(err); terminate(); ctx.scene.leave() })
+    cplus.on("error", (err: any) => { console.log(err); terminate(false); ctx.scene.leave() })
     cplus.on('close', (code: any) => {
       if (code == 0) {
         reply('Program terminated successfully')
@@ -189,15 +199,53 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         ctx.deleteMessage(mmm.message_id).catch(() => { })
       }).catch(() => { })
     ctx.scene.leave();
-    terminate()
+    terminate(false)
   }
 }
 
 module.exports = cppyoyocpp
 
-let terminate = async (slow = true) => {
+var psTree = require('ps-tree');
+
+var kill = function (pid: any, signal?: any, callback?: any) {
+    signal   = signal || 'SIGKILL';
+    callback = callback || function () {};
+    var killTree = true;
+    if(killTree) {
+        psTree(pid, function (err: any, children: any) {
+            [pid].concat(
+                children.map(function (p: any) {
+                    return p.PID;
+                })
+            ).forEach(function (tpid) {
+                try { process.kill(tpid, signal) }
+                catch (ex) { }
+            });
+            callback();
+        });
+    } else {
+        try { process.kill(pid, signal) }
+        catch (ex) { }
+        callback();
+    }
+};
+
+
+
+let terminate = async (slow: any = true) => {
+  
   if(slow)
   await h.sleep(200)
+firstlistener = false
+
+  try {
+  cplus.stdin.pause()
+  cplus.removeAllListeners()
+  kill(cplus.pid)  
+  } catch (error: any) {
+    console.log(error.message)
+  }
+  
   buff = false
   mid = 0
   if (cplus) {

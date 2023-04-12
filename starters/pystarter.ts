@@ -34,10 +34,10 @@ async function pyStarter(bot: any, ctx: any) {
       let code: any;
       let pi: any;
       console.log('yoo')
-      if (ctx.message.text.startsWith('/py'))
-        code = ctx.message.text.substring(4)
-      else if (ctx.message.text.startsWith('/python'))
+      if (ctx.message.text.startsWith('/python'))
         code = ctx.message.text.substring(8)
+      else if (ctx.message.text.startsWith('/py'))
+        code = ctx.message.text.substring(4)
       // return console.log(code)
       if (flag[cmp + id])
         pi = await func[cmp + id + cmp](bot, ctx, { code: code, ter: true });

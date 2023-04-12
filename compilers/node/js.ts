@@ -1,6 +1,6 @@
 import { Telegraf, Context } from "telegraf";
 import Hlp from '../../helpers'
-let { spawn } = require('child_process');
+let { spawn, exec } = require('child_process');
 import fs from "fs"
 
 let h = new Hlp();
@@ -12,6 +12,7 @@ let fromId: any = 0;
 const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
 let buff = false
+let firstlistener = true
 interface Opt {
   code?: any; ter?: Boolean; onlyTerminate?: boolean
 }
@@ -40,13 +41,15 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     }
     let previous = Date.now()
     let repeats = 0
+    let looperr = false
     let jsout = async (tempdata: any) => {
 
       let current = Date.now()
       if (previous + 30 > current)
         repeats++
-      if (repeats > 5) {
-        terminate()
+        if (repeats > 5 && !looperr) {
+          looperr = true
+        terminate(false)
         reply('It seems you are created infinite loop')
         ctx.scene.leave()
         return
@@ -77,15 +80,21 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           .catch((err) => { console.log(err) })
       }
-      ctxemitter.once('ctx', async (ctxx: any) => {
-        console.log(EventEmitter.listenerCount(ctxemitter, 'ctx'))
+      // return
+      if (!firstlistener)
+        return
+        firstlistener = false
+      ctxemitter.on('ctx', async (ctxx: any) => {
         ctxx.deleteMessage().catch(() => { })
-        ctxemitter.removeAllListeners()
         try {
-          await node.stdin.write(ctxx.message.text + "\n")
-        } catch (err: any) { console.log("error: 62" + err) }
         editedMes += ctxx.message.text + "\n"
-        console.log('yes')
+          if(mid == 0)
+         mid = await ctx.reply("" + editedMes)
+          else
+    await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
+          await node.stdin.write(ctxx.message.text + "\n")
+        } catch (err: any) { console.log(err) }
+   
       });
     }
 
@@ -99,7 +108,7 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     h.sleep(ttl * 1000).then(() => {
       code = false
       if (node) {
-        ctx.reply("Timout: " + ttl * 1000 + " Seconds")
+        ctx.reply("Timout: " + ttl + " Seconds")
         terminate()
         ctx.scene.leave()
       }
@@ -174,17 +183,53 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
 module.exports = jsyoyojs
 
-let terminate = async (slow = true) => {
-if(slow)
+var psTree = require('ps-tree');
+
+var kill = function (pid: any, signal?: any, callback?: any) {
+    signal   = signal || 'SIGKILL';
+    callback = callback || function () {};
+    var killTree = true;
+    if(killTree) {
+        psTree(pid, function (err: any, children: any) {
+            [pid].concat(
+                children.map(function (p: any) {
+                    return p.PID;
+                })
+            ).forEach(function (tpid) {
+                try { process.kill(tpid, signal) }
+                catch (ex) { }
+            });
+            callback();
+        });
+    } else {
+        try { process.kill(pid, signal) }
+        catch (ex) { }
+        callback();
+    }
+};
+
+let terminate = async (slow: any = true) => {
+  if(slow)
   await h.sleep(200)
+firstlistener = false
+
+  try {
+  node.stdin.pause()
+    exec(`kill -1 ${node.pid}`)
+  node.removeAllListeners()
+    console.log(node.pid)
+  kill(node.pid, "SIGTERM")  
+  } catch (error: any) {
+    console.log(error.mesage)
+  }
   mid = 0
   buff = false
-  if (node) {
-    node.removeAllListeners()
-    await node.kill("SIGKILL")
-    node = null
-    console.log(node)
-  }
+  // if (node) {
+  //   // node.removeAllListeners()
+  //   await node.kill("SIGINT")
+  //   node = null
+  //   console.log(node)
+  // }
   console.log('terminating...')
   if (ctxemitter)
     ctxemitter.removeAllListeners()
