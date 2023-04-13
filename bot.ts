@@ -53,7 +53,7 @@ Uptime: ${hr} : ${min} : ${sec}
 `).catch(() => { })
   })
 
-  bot.hears(/^\/(v|version)/, (ctx: any) => {
+  bot.hears(/^\/(version)/, (ctx: any) => {
     ctx.reply(`=========================
 𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 =========================
@@ -93,7 +93,7 @@ Its 100% free made for helping to students
   bot.help(async (ctx: any) => {
     ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 
-/version or /v to see latest version and features
+/version to see latest version and features
 /𝗰𝗼𝗱𝗲 to excecute your c code
 /𝗽𝘆 𝗼𝗿 /𝗽𝘆𝘁𝗵𝗼𝗻 to execute your python code
 /𝗷𝘀 𝗼𝗿 /𝗻𝗼𝗱𝗲 to execute your javascript code
