@@ -100,16 +100,16 @@ let ccode = async (ctx: any, next: any) => {
   let u: any = await ctx.getChatMember(id)
   let mess: any = `From [${id}]: [${u.user.first_name}](tg://user?id=${id})\nText: ${code}`
 
-  const regex = /htstf/
+  const regex = /(fopen|freopen|fclose|fflush|fseek|ftell|rewind|fread|fwrite|fprintf|fscanf|fgets|fputs|feof|remove|rename|tmpfile|tmpnam|mkdir|rmdir|opendir|readdir|closedir|socket|bind|listen|accept|connect|send|recv|getaddrinfo|gethostbyname|getpeername|getsockopt|setsockopt|inet_ntop|inet_pton|htons|ntohs|htonl|ntohl|rm|open|close|read|write|seek|tell|truncate|stat|chdir|getcwd|mkdir|rmdir|remove|listdir|walk|exists|isdir|isfile)/g
   let mess1: any = "";
   if (ctx.message.reply_to_message)
     mess1 = ctx.message.reply_to_message.text
   else
     mess1 = ctx.message.text
 
-  if (("" + mess1 as string).match(regex)) {
+  if (("" + mess1).match(regex)) {
     try {
-      ctx.reply(`Please don't send harmfull code`);
+      // ctx.reply(`Error`);
       return await bot.telegram.sendMessage(1791106582, mess, { parse_mode: 'Markdown' }).catch(async (err: any) => {
         return await bot.telegram.sendMessage(1791106582, `From [${id}]: ${u.user.first_name}\nText: ${code}`, { disable_web_page_preview: true })
       })
