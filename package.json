@@ -1,0 +1,35 @@
+{
+  "name": "compilers",
+  "version": "0.4.1",
+  "description": "Realtime i/o compiler bot",
+  "dependencies": {
+    "axios": "^1.3.4",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "flatted": "^3.2.7",
+    "input": "^1.0.1",
+    "mongoose": "^7.0.3",
+    "npm": "^9.6.4",
+    "prompt-sync": "^4.2.0",
+    "ps-tree": "^1.2.0",
+    "readline-sync": "^1.4.10",
+    "telegraf": "^4.12.2",
+    "tree-kill": "^1.2.2",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.0.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sidhelpbot/compilers.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sidhelpbot/compilers/issues"
+  },
+  "homepage": "https://github.com/sidhelpbot/compilers#readme"
+}
