@@ -1,3 +1,8 @@
+
+# [env]
+# XDG_CONFIG_HOME = "/home/runner/$REPL_SLUG/.config"
+# PATH = "/home/runner/$REPL_SLUG/.config/npm/node_global/bin:/home/runner/$REPL_SLUG/node_modules/.bin"
+# npm_config_prefix = "/home/runner/$REPL_SLUG/.config/npm/node_global"
 run = "./node_modules/.bin/ts-node ./index.ts"
 entrypoint = "index.ts"
 hidden = [".build", ".config"]
@@ -10,12 +15,8 @@ enabledForHosting = false
 packageSearch = true
 guessImports = true
 
-# [env]
-# XDG_CONFIG_HOME = "/home/runner/.config"
 [env]
-XDG_CONFIG_HOME = "/home/runner/$REPL_SLUG/.config"
-PATH = "/home/runner/$REPL_SLUG/.config/npm/node_global/bin:/home/runner/$REPL_SLUG/node_modules/.bin"
-npm_config_prefix = "/home/runner/$REPL_SLUG/.config/npm/node_global"
+XDG_CONFIG_HOME = "/home/runner/.config"
 
 [nix]
 channel = "stable-22_11"
