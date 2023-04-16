@@ -63,9 +63,6 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
        return
        }
        buff = true
-      if(first)
-       await h.sleep(5)
-        else
        await h.sleep(20)
        buff = false
       first = false

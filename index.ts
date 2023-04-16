@@ -70,8 +70,15 @@ bot.command("code", (ctx: any) => {
   ctx.scene.enter("code")
 });
 
-bot.hears(/^\/(code|py|python|js|node|c|cpp|cplus|go|jv|java|c\+\+)/i, (ctx: any) => {
+bot.hears(/^\/(code|py|python|js|node|c|cpp|cplus|go|jv|java|c\+\+)/i, async (ctx: any) => {
   let compiler: any = ctx.message.text + "";
+  let memb = await ctx.getChatMember(ctx.botInfo.id)
+ 
+  if(!memb.can_delete_messages){
+    if((ctx.chat.id + "").startsWith("-100"))
+    return ctx.reply('I must be admin with delete message permission')
+  }
+  
   if ((/^\/(py|python)/i).test(compiler))
     ctx.scene.enter("py")
   else if ((/^\/(js|node)/i).test(compiler))

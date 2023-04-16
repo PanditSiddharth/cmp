@@ -4,6 +4,13 @@ import axios from "axios"
 import mdb from "./db";
 import Hlp from './helpers'
 let h = new Hlp()
+let version = `𝐕𝐞𝐫𝐬𝐢𝐨𝐧: 0.4.1\n𝐕𝐞𝐫𝐬𝐢𝐨𝐧 𝐧𝐨.: 8`
+let langcmds = `/𝗰𝗼𝗱𝗲 to excecute your c code
+/𝗽𝘆 𝗼𝗿 /𝗽𝘆𝘁𝗵𝗼𝗻 to execute your python code
+/𝗷𝘀 𝗼𝗿 /𝗻𝗼𝗱𝗲 to execute your javascript code
+/𝗰𝗽𝗽 𝗼𝗿 /𝗰𝗽𝗹𝘂𝘀 to execute your cplus code
+/𝗷𝘃 𝗼𝗿 /𝗷𝗮𝘃𝗮 to execute your java code
+/G𝗼 to execute golang code`
 const bt = (bot: any) => {
   const fs = require('fs');
   const filePath = './data.txt';
@@ -47,8 +54,7 @@ ${chat.username ? "Username: @" + chat.username : ""}`, { chat_id: -100198840826
 𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 =========================
 
-𝐕𝐞𝐫𝐬𝐢𝐨𝐧: 0.4.1
-𝐕𝐞𝐫𝐬𝐢𝐨𝐧 𝐧𝐨.: 8
+${version}
 Uptime: ${hr} : ${min} : ${sec}
 `).catch(() => { })
   })
@@ -58,8 +64,7 @@ Uptime: ${hr} : ${min} : ${sec}
 𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 =========================
 
-𝐕𝐞𝐫𝐬𝐢𝐨𝐧: 0.4.1
-𝐕𝐞𝐫𝐬𝐢𝐨𝐧 𝐧𝐨.: 8
+${version}
 𝐃𝐞𝐯𝐞𝐥𝐨𝐩𝐞𝐫: @PanditSiddharth
 
 𝗙𝗲𝗮𝘁𝘂𝗿𝗲𝘀:
@@ -76,12 +81,7 @@ Uptime: ${hr} : ${min} : ${sec}
     ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 Its 100% free made for helping to students
 
-/𝗰𝗼𝗱𝗲 to excecute your c code
-/𝗽𝘆 𝗼𝗿 /𝗽𝘆𝘁𝗵𝗼𝗻 to execute your python code
-/𝗷𝘀 𝗼𝗿 /𝗻𝗼𝗱𝗲 to execute your javascript code
-/𝗰𝗽𝗽 𝗼𝗿 /𝗰𝗽𝗹𝘂𝘀 to execute your cplus code
-/𝗷𝘃 𝗼𝗿 /𝗷𝗮𝘃𝗮 to execute your java code
-/G𝗼 to execute golang code
+${langcmds}
 /𝗹𝗲𝗮𝘃𝗲 to leave session (if you not want excecute your code)
 /help to see full help list
 
@@ -94,11 +94,7 @@ Its 100% free made for helping to students
     ctx.reply(`𝗥𝗲𝗮𝗹𝘁𝗶𝗺𝗲 𝗶/𝗼 𝗰𝗼𝗺𝗽𝗶𝗹𝗲𝗿 𝗯𝗼𝘁
 
 /version to see latest version and features
-/𝗰𝗼𝗱𝗲 to excecute your c code
-/𝗽𝘆 𝗼𝗿 /𝗽𝘆𝘁𝗵𝗼𝗻 to execute your python code
-/𝗷𝘀 𝗼𝗿 /𝗻𝗼𝗱𝗲 to execute your javascript code
-/𝗰𝗽𝗽 𝗼𝗿 /𝗰𝗽𝗹𝘂𝘀 to execute your c++ code
-/𝗷𝘃 𝗼𝗿 /𝗷𝗮𝘃𝗮 to execute your java code
+${langcmds}
 /leave to leave session (if you not want excecute your code)
 /help to see updated commands in bot
 
@@ -147,67 +143,68 @@ Its 100% free made for helping to students
     }).catch((err: any) => { })
   })
 
-async function reply(ctx: any, msg: any, tim: number = 10, mode: any = null ){
-  ctx.reply(msg, {parse_mode: mode})
-  .then(async (ms: any) => {await h.sleep(tim * 1000); return ms;})
-  .then(async (ms: any) => {ctx.deleteMessage(ms.message_id)})
-  .catch((err: any)=> {})
-}
+  async function reply(ctx: any, msg: any, tim: number = 10, mode: any = null) {
+    ctx.reply(msg, { parse_mode: mode })
+      .then(async (ms: any) => { await h.sleep(tim * 1000); return ms; })
+      .then(async (ms: any) => { ctx.deleteMessage(ms.message_id) })
+      .catch((err: any) => { })
+  }
 
-bot.hears(/^\/inf/i, async (ctx: any)=> {
-  let msg : any = ctx.message
-  let id : any ;
-  let match : any = ctx.message.text.match(/@[a-zA-Z0-9_]+/)
-  if(!match)
-    return reply(ctx, 'Seems you are not given username')
-  
-  id = (await axios.get(`https://tguname.panditsiddharth.repl.co/${match[0]}`)).data
-  
-  if(id.className == 'User'){
-    reply(ctx, `
+  bot.hears(/^\/inf/i, async (ctx: any) => {
+    let msg: any = ctx.message
+    let id: any;
+    let match: any = ctx.message.text.match(/@[a-zA-Z0-9_]+/)
+    if (!match)
+      return reply(ctx, 'Seems you are not given username')
+
+    id = (await axios.get(`https://tguname.panditsiddharth.repl.co/${match[0]}`)).data
+
+    if (id.className == 'User') {
+      reply(ctx, `
 id : \`${id.id}\`
 username: ${match[0]}
 firstName: ${id.firstName}${id.lastName ? "\nlastName: " + id.lastName : ""}
-premium: ${id.premium ? "Yes": 'No'}
-restricted: ${id.restricted ? "Yes": 'No'}
-deleted: ${id.deleted ? "Yes": 'No'}
-isBot: ${id.bot ? "Yes": 'No'}
+premium: ${id.premium ? "Yes" : 'No'}
+restricted: ${id.restricted ? "Yes" : 'No'}
+deleted: ${id.deleted ? "Yes" : 'No'}
+isBot: ${id.bot ? "Yes" : 'No'}
 `, 60)
     }
-else if(id.className == 'Channel'){
-    reply(ctx, `
+    else if (id.className == 'Channel') {
+      reply(ctx, `
 id : \`${"-100" + id.id}\`
 username: *${match[0]}*
 title: ${id.title}
-supergroup: ${id.megagroup ? "Yes": 'No'}
-restricted: ${id.restricted ? "Yes": 'No'}
-`, 60, 'Markdown')}
-else {
-  reply(ctx, 'User or Chat not found')
-}
-})
-  
-  
-bot.hears(/^\/sendTo/i, (ctx: Context)=> {
-  let msg: any = ctx.message
+supergroup: ${id.megagroup ? "Yes" : 'No'}
+restricted: ${id.restricted ? "Yes" : 'No'}
+`, 60, 'Markdown')
+    }
+    else {
+      reply(ctx, 'User or Chat not found')
+    }
+  })
 
-  if(!list.includes(msg.from.id))
-     return reply(ctx, 'You are not allowed')
-  
-  if(!msg.reply_to_message)
-    return reply(ctx, 'Please reply to message')
 
-  let match: any = ("" + msg.text).match(/[-]?\d{9,14}/)
-  // console.log(match)
+  bot.hears(/^\/sendTo/i, (ctx: Context) => {
+    let msg: any = ctx.message
 
- if(!match)
-   return reply(ctx, "Please give id where to send text")
-let ctxx: any = ctx
-  bot.telegram.sendMessage(match[0], msg.reply_to_message.text)
- .catch((err: any)=> {reply(ctx, err.message)})
-  reply(ctx, "message successfully sent", 60)
-})
-    
+    if (!list.includes(msg.from.id))
+      return reply(ctx, 'You are not allowed')
+
+    if (!msg.reply_to_message)
+      return reply(ctx, 'Please reply to message')
+
+    let match: any = ("" + msg.text).match(/[-]?\d{9,14}/)
+    // console.log(match)
+
+    if (!match)
+      return reply(ctx, "Please give id where to send text")
+    let ctxx: any = ctx
+    bot.telegram.sendMessage(match[0], msg.reply_to_message.text)
+      .catch((err: any) => { reply(ctx, err.message) })
+    reply(ctx, "message successfully sent", 60)
+  })
+
   // bot.command('auths', async (ctx: any) => {
   // try {
   //   let mess = 'Auth Users\n'

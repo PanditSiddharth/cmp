@@ -1,5 +1,6 @@
 { pkgs }: {
     deps = [
+        pkgs.python3Full
         pkgs.nano
         pkgs.vim
         pkgs.python39Packages.pip
@@ -9,7 +10,6 @@
         pkgs.lsof
         pkgs.jdk
         pkgs.mono5
-        pkgs.python
         pkgs.go
         pkgs.gcc
         pkgs.yarn
