@@ -89,6 +89,9 @@ let goyoyogo = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
           else
     await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           await golang.stdin.write(ctxx.message.text + "\n")
+          
+          golang.stdin.end()
+          
         } catch (err: any) { console.log(err) }
    
       });

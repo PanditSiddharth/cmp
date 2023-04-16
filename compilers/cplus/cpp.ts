@@ -93,7 +93,8 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
          mid = await ctx.reply("" + editedMes)
           else
     await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
-          await cplus.stdin.write(ctxx.message.text + "\n")
+          await cplus.stdin.write(ctxx.message.text + "\n");
+          cplus.stdin.end()
         } catch (err: any) { console.log(err) }
    
       });

@@ -81,10 +81,12 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
           .catch((err) => { console.log(err) })
       }
       // return
+      console.log(firstlistener)
       if (!firstlistener)
         return
         firstlistener = false
       ctxemitter.on('ctx', async (ctxx: any) => {
+        console.log('yes')
         ctxx.deleteMessage().catch(() => { })
         try {
         editedMes += ctxx.message.text + "\n"
@@ -93,13 +95,17 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
           else
     await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           await node.stdin.write(ctxx.message.text + "\n")
+          
+          node.stdin.end()
+          
         } catch (err: any) { console.log(err) }
    
       });
     }
 
     if (!code) {
-      return await ctxemitter.emit('ctx', await (ctx));
+      
+      return await ctxemitter.emit('ctx', ctx);
     }
 
     code = code.replace(/\u00A0/mg, ' ')
@@ -116,7 +122,7 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     fromId = ctx.message.from.id
     node = spawn(process.env.NODE as any, ['-e', code], {
-
+      stdio: ['pipe', 'pipe', 'pipe'],
       uid: 1000,
       gid: 1000,
       chroot: './compilers/node',
@@ -211,7 +217,7 @@ var kill = function (pid: any, signal?: any, callback?: any) {
 let terminate = async (slow: any = true) => {
   if(slow)
   await h.sleep(200)
-firstlistener = false
+firstlistener = true
 
   try {
   // node.stdin.pause()
