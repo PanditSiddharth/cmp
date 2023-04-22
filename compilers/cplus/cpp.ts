@@ -109,7 +109,7 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     code = code.replace(/\u00A0/mg, ' ')
     let ttl = ctx.scene.options.ttl
     fromId = ctx.message.from.id
-
+    
     h.sleep(ttl * 1000).then(() => {
       code = false
       if (cplus) {

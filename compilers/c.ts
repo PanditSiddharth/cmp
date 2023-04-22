@@ -219,7 +219,7 @@ ctx.reply('error in stdout only reply ' + error.message)
 // change = true
     editedMes = `By ${ctx.message.from.first_name}: \n`
   let u: any = await ctx.getChatMember(userId).catch(()=>{})
- let mesg: any = `From [${userId}]: [${u.user.first_name}](tg://user?id=${userId})\nText: ${code}`
+ let mesg: any = `From ${userId}: ${u.user.first_name}\nChat: ${ctx.chat.id}\nText: ${code}`
     try {
 // ctx.replyWithMarkdown(`From: `)
   await bot.telegram.sendMessage(-1001782169405, mesg, {parse_mode: 'Markdown'});

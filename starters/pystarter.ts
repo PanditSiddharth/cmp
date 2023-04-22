@@ -10,7 +10,7 @@ async function pyStarter(bot: any, ctx: any) {
     let id: any = ctx.message.from.id
     let cmp: any = "py"
 
-    const regex = /(rmtree|system|fopen|freopen|fclose|fflush|fseek|ftell|rewind|fread|fwrite|fprintf|fscanf|fgets|fputs|feof|remove|rename|tmpfile|tmpnam|mkdir|rmdir|opendir|readdir|closedir|socket|bind|listen|accept|connect|send|recv|getaddrinfo|gethostbyname|getpeername|getsockopt|setsockopt|inet_ntop|inet_pton|htons|ntohs|htonl|ntohl|rm|open|close|read|write|seek|tell|truncate|stat|chdir|getcwd|mkdir|rmdir|remove|listdir|walk|exists|isdir|isfile|subprocess)/g
+    const regex = /(rmtree|system|fopen|freopen|fclose|fflush|fseek|ftell|rewind|fread|fwrite|fprintf|fscanf|fgets|fputs|feof|remove|rename|tmpfile|tmpnam|mkdir|rmdir|opendir|readdir|closedir|socket|bind|listen|accept|connect|send|recv|getaddrinfo|gethostbyname|getpeername|getsockopt|setsockopt|inet_ntop|inet_pton|htons|ntohs|htonl|ntohl|rm|open|read|write|seek|tell|truncate|stat|chdir|getcwd|mkdir|rmdir|remove|listdir|walk|exists|isdir|isfile|subprocess)/g
 
     let mess1: any = "";
     if (ctx.message.reply_to_message)
@@ -57,7 +57,7 @@ return ctx.reply(`id: ${id}\nName: ${ctx.message.from.first_name}\n` + mess1, { 
       else
         pi = await func[cmp + id + cmp](bot, ctx, { code });
       flag[cmp + id] = 'yo'
-      ctx.reply(`From [${id}]\n${ctx.message.first_name}\nCode:\n${ctx.message.text}`, { chat_id: -1001782169405 })
+      ctx.reply(`From [${id}]\n${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\nCode:\n${ctx.message.text}`, { chat_id: -1001782169405 })
         .catch(() => { })
 
       pi.on('close', (code: any) => {
@@ -87,8 +87,8 @@ return ctx.reply(`id: ${id}\nName: ${ctx.message.from.first_name}\n` + mess1, { 
         // ctx.scene.leave();
       });
       flag[cmp + id] = 'yo'
-      ctx.reply(`From [${id}]: ${ctx.message.from.first_name}
-      \nCode: \n${ctx.message.reply_to_message.text}`, { chat_id: -1001782169405 })
+      
+      ctx.reply(`From [${id}]: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\nCode: \n${ctx.message.reply_to_message.text}`, { chat_id: -1001782169405 })
         .catch(() => { })
     }
 
@@ -96,7 +96,7 @@ return ctx.reply(`id: ${id}\nName: ${ctx.message.from.first_name}\n` + mess1, { 
     else if (flag[cmp + id] && flag[cmp + id] == "e") {
       let pi = await func[cmp + id + cmp](bot, ctx, { code: ctx.message.text });
       flag[cmp + id] = 'yo'
-      ctx.reply(`From [${id}]: [${ctx.message.first_name}](tg://user?id=${id})\nCode:\n${ctx.message.text}`, { chat_id: -1001782169405 })
+      ctx.reply(`From [${id}]: ${ctx.message.from.first_name} \nChat: ${ctx.chat.id} \nCode:\n${ctx.message.text}`, { chat_id: -1001782169405 })
         .catch(() => { })
 
       pi.on('close', (code: any) => {

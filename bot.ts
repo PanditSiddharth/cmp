@@ -146,7 +146,7 @@ ${langcmds}
   async function reply(ctx: any, msg: any, tim: number = 10, mode: any = null) {
     ctx.reply(msg, { parse_mode: mode })
       .then(async (ms: any) => { await h.sleep(tim * 1000); return ms; })
-      .then(async (ms: any) => { ctx.deleteMessage(ms.message_id) })
+      .then(async (ms: any) => { ctx.deleteMessage(ms.message_id).catch((err: any) => { }) })
       .catch((err: any) => { })
   }
 
@@ -154,23 +154,21 @@ ${langcmds}
     let msg: any = ctx.message
     let id: any;
     let match: any = ctx.message.text.match(/@[a-zA-Z0-9_]+/)
-    if (!match){
+    if (!match) {
       let idmatch = msg.text.match(/\-100[0-9_]+/)
-      if(idmatch){
+      if (idmatch) {
         let idd = idmatch[0]
-        let cid = await ctx.getChat(idd)
-        console.log(cid)
-//      reply(ctx, `
-// id : \`${id.id}\`
-// username: ${match[0]}
-// firstName: ${id.firstName}${id.lastName ? "\nlastName: " + id.lastName : ""}
-// premium: ${id.premium ? "Yes" : 'No'}
-// restricted: ${id.restricted ? "Yes" : 'No'}
-// deleted: ${id.deleted ? "Yes" : 'No'}
-// isBot: ${id.bot ? "Yes" : 'No'}
-// `, 60)
+        let cid = await bot.telegram.getChat(idd).catch((err: any) => { })
+        if(!cid)
+          return reply(ctx, "Seems I'm not admin of given chat")
+        return ctx.reply(`
+Title: ${cid.title}
+id : ${cid.id}
+${cid.username ? "Username: @" + cid.username : ''}
+${(list.includes(msg.from.id) && cid.invite_link) ? "Invite Link: " + cid.invite_link : ""}`, {disable_web_page_preview: true })
+        .catch((err:any)=>{reply(ctx, err.message, 20)})
       }
-      return reply(ctx, 'Seems you are not given username')
+      // return reply(ctx, 'Seems you are not given username')
     }
 
     id = (await axios.get(`https://tguname.panditsiddharth.repl.co/${match[0]}`)).data
