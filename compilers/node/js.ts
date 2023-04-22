@@ -61,7 +61,7 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         return
       }
       buff = true
-      await h.sleep(2)
+      await h.sleep(20)
       buff = false
       if (repeats > 10)
         return

@@ -48,23 +48,23 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       let current = Date.now()
       if (previous + 30 > current)
         repeats++
-     if (repeats > 5 && !looperr) {
-       let looperr = true
+      if (repeats > 5 && !looperr) {
+        let looperr = true
         terminate(false)
         reply('It seems you are created infinite loop')
         ctx.scene.leave()
         return
       }
-      
+
       editedMes += tempdata.toString()
       console.log(editedMes)
 
-       if (buff) {
-       return
-       }
-       buff = true
-       await h.sleep(20)
-       buff = false
+      if (buff) {
+        return
+      }
+      buff = true
+      await h.sleep(20)
+      buff = false
       first = false
       if (repeats > 4)
         return
@@ -76,7 +76,8 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
               reply('message is too long')
               terminate(false)
               ctx.scene.leave()
-            } })
+            }
+          })
       }
       else {
         await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
@@ -84,19 +85,20 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       }
       if (!firstlistener)
         return
-        firstlistener = false
+      firstlistener = true
       ctxemitter.on('ctx', async (ctxx: any) => {
         ctxx.deleteMessage().catch(() => { })
         try {
-        editedMes += ctxx.message.text + "\n"
-          if(mid == 0)
-         mid = await ctx.reply("" + editedMes)
+          editedMes += ctxx.message.text + "\n"
+          if (mid == 0)
+            mid = await ctx.reply("" + editedMes)
           else
-    await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
+            await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           await cplus.stdin.write(ctxx.message.text + "\n");
+
           cplus.stdin.end()
         } catch (err: any) { console.log(err) }
-   
+
       });
     }
 
@@ -205,45 +207,44 @@ module.exports = cppyoyocpp
 
 var psTree = require('ps-tree');
 
-var kill = function (pid: any, signal?: any, callback?: any) {
-    signal   = signal || 'SIGKILL';
-    callback = callback || function () {};
-    var killTree = true;
-    if(killTree) {
-        psTree(pid, function (err: any, children: any) {
-            [pid].concat(
-                children.map(function (p: any) {
-                    return p.PID;
-                })
-            ).forEach(function (tpid) {
-                try { process.kill(tpid, signal) }
-                catch (ex) { }
-            });
-            callback();
-        });
-    } else {
-        try { process.kill(pid, signal) }
+var kill = function(pid: any, signal?: any, callback?: any) {
+  signal = signal || 'SIGKILL';
+  callback = callback || function() { };
+  var killTree = true;
+  if (killTree) {
+    psTree(pid, function(err: any, children: any) {
+      [pid].concat(
+        children.map(function(p: any) {
+          return p.PID;
+        })
+      ).forEach(function(tpid) {
+        try { process.kill(tpid, signal) }
         catch (ex) { }
-        callback();
-    }
+      });
+      callback();
+    });
+  } else {
+    try { process.kill(pid, signal) }
+    catch (ex) { }
+    callback();
+  }
 };
 
 
 
 let terminate = async (slow: any = true) => {
-  
-  if(slow)
-  await h.sleep(200)
-firstlistener = false
+
+  if (slow)
+    await h.sleep(200)
+  firstlistener = true
 
   try {
-  cplus.stdin.pause()
-  cplus.removeAllListeners()
-  kill(cplus.pid)  
+    cplus.removeAllListeners()
+    kill(cplus.pid)
   } catch (error: any) {
     console.log(error.message)
   }
-  
+
   buff = false
   mid = 0
   if (cplus) {

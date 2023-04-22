@@ -252,7 +252,7 @@ var kill = function (pid: any, signal?: any, callback?: any) {
 let terminate = async (slow: any = true) => {
   if(slow)
   await h.sleep(200)
-firstlistener = false
+firstlistener = true
 
   try {
   java.removeAllListeners()

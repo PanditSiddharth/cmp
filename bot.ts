@@ -154,8 +154,24 @@ ${langcmds}
     let msg: any = ctx.message
     let id: any;
     let match: any = ctx.message.text.match(/@[a-zA-Z0-9_]+/)
-    if (!match)
+    if (!match){
+      let idmatch = msg.text.match(/\-100[0-9_]+/)
+      if(idmatch){
+        let idd = idmatch[0]
+        let cid = await ctx.getChat(idd)
+        console.log(cid)
+//      reply(ctx, `
+// id : \`${id.id}\`
+// username: ${match[0]}
+// firstName: ${id.firstName}${id.lastName ? "\nlastName: " + id.lastName : ""}
+// premium: ${id.premium ? "Yes" : 'No'}
+// restricted: ${id.restricted ? "Yes" : 'No'}
+// deleted: ${id.deleted ? "Yes" : 'No'}
+// isBot: ${id.bot ? "Yes" : 'No'}
+// `, 60)
+      }
       return reply(ctx, 'Seems you are not given username')
+    }
 
     id = (await axios.get(`https://tguname.panditsiddharth.repl.co/${match[0]}`)).data
 
