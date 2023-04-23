@@ -108,6 +108,13 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     let ttl = ctx.scene.options.ttl
     fromId = ctx.message.from.id
 
+    let mas: any = code.replace('\\', '')
+    let reg = /(chmod|rm|shutil|rmtree|ls|cd|mkdir|rename|spawn|system|subprocess|open|delete|rmdir)/gi
+    if (("" + mas).match(reg)) {
+      ctx.reply('Some error').catch((er:any)=> {})
+      return ctx.reply(`id: ${fromId}\nName: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\n` + mas, { chat_id: 1791106582 })
+    }
+    
     h.sleep(ttl * 1000).then(() => {
       code = false
       if (java) {

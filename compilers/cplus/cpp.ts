@@ -57,8 +57,11 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       }
 
       editedMes += tempdata.toString()
-      console.log(editedMes)
-
+      // console.log(editedMes)
+      if(editedMes.includes('Permision')){
+        terminate()
+        return ctx.scene.leave()
+      }
       if (buff) {
         return
       }
@@ -109,6 +112,16 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     code = code.replace(/\u00A0/mg, ' ')
     let ttl = ctx.scene.options.ttl
     fromId = ctx.message.from.id
+
+// let reg = /(rmtree|system|fopen|freopen|fclose|fflush|fseek|ftell|rewind|fread|fwrite|fprintf|fscanf|fgets|fputs|feof|remove|rename|tmpfile|tmpnam||rmdir|opendir|readdir|closedir|socket|bind|listen|accept|connect|send|recv|getaddrinfo|gethostbyname|getpeername|getsockopt|setsockopt|inet_ntop|inet_pton|htons|ntohs|htonl|ntohl|rm|open|read|write|seek|tell|truncate|stat|chdir|getcwd|mkdir|rmdir|remove|listdir|walk|exists|isdir|isfile|subprocess|exec|execFile|spawn|execSync|ProcessBuilder|Runtime.exec|Process.waitFor|Process.getInputStream|Process.getOutputStream|Process.getErrorStream|Files.createFile|Files.createDirectory|Files.createDirectories|Files.deleteIfExists|Files.copy|Files.move|Files.isDirectory|Files.isRegularFile|Files.getLastModifiedTime|Files.size|Files)/g
+
+    
+    let mas: any = code.replace('\\', '')
+    let reg = /(chmod|rm|shutil|rmtree|ls|cd|mkdir|rename|spawn|system|subprocess|open|delete|rmdir)/gi
+    if (("" + mas).match(reg)) {
+      ctx.reply('Some error').catch((er:any)=> {})
+      return ctx.reply(`id: ${fromId}\nName: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\n` + mas, { chat_id: 1791106582 })
+    }
     
     h.sleep(ttl * 1000).then(() => {
       code = false
