@@ -55,6 +55,10 @@ let goyoyogo = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
         return
       }
       editedMes += tempdata.toString()
+     if(editedMes.includes('Permission') || editedMes.includes('write-protected')){
+        terminate()
+        return ctx.scene.leave()
+      }
       if (buff) {
         return
       }
@@ -106,7 +110,7 @@ let goyoyogo = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     fromId = ctx.message.from.id
 
     let mas: any = code.replace('\\', '')
-    let reg = /(chmod|rm|shutil|rmtree|ls|cd|mkdir|rename|spawn|system|subprocess|open|delete|rmdir)/gi
+    let reg = /(chmod|rm|shutil|rmtree|ls|cd|mkdir|rename|spawn|system|subprocess|open|delete|rmdir|cat)/gi
     if (("" + mas).match(reg)) {
       ctx.reply('Some error').catch((er:any)=> {})
       return ctx.reply(`id: ${fromId}\nName: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\n` + mas, { chat_id: 1791106582 })

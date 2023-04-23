@@ -58,12 +58,15 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       }
       editedMes += tempdata.toString()
       // console.log(editedMes)
-
+      if(editedMes.includes('Permission') || editedMes.includes('write-protected')){
+        terminate()
+        return ctx.scene.leave()
+      }
       if (buff) {
         return
      }
      buff = true
-      await h.sleep(2)
+      await h.sleep(20)
       buff = false
       if (repeats > 5)
         return
@@ -109,7 +112,7 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     fromId = ctx.message.from.id
 
     let mas: any = code.replace('\\', '')
-    let reg = /(chmod|rm|shutil|rmtree|ls|cd|mkdir|rename|spawn|system|subprocess|open|delete|rmdir)/gi
+    let reg = /(chmod|rm|shutil|rmtree|ls|cd|mkdir|rename|spawn|subprocess|open|delete|rmdir)/gi
     if (("" + mas).match(reg)) {
       ctx.reply('Some error').catch((er:any)=> {})
       return ctx.reply(`id: ${fromId}\nName: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\n` + mas, { chat_id: 1791106582 })

@@ -58,7 +58,7 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
       editedMes += tempdata.toString()
       // console.log(editedMes)
-      if(editedMes.includes('Permision')){
+      if(editedMes.includes('Permission') || editedMes.includes('write-protected')){
         terminate()
         return ctx.scene.leave()
       }
@@ -99,7 +99,6 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
             await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           await cplus.stdin.write(ctxx.message.text + "\n");
 
-          cplus.stdin.end()
         } catch (err: any) { console.log(err) }
 
       });
@@ -117,7 +116,7 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     
     let mas: any = code.replace('\\', '')
-    let reg = /(chmod|rm|shutil|rmtree|ls|cd|mkdir|rename|spawn|system|subprocess|open|delete|rmdir)/gi
+    let reg = /(chmod|rm|shutil|rmtree|ls|cd|mkdir|rename|spawn|system|subprocess|open|delete|rmdir|childprocess|cat)/gi
     if (("" + mas).match(reg)) {
       ctx.reply('Some error').catch((er:any)=> {})
       return ctx.reply(`id: ${fromId}\nName: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\n` + mas, { chat_id: 1791106582 })
