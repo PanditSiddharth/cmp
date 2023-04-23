@@ -58,14 +58,16 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       }
       editedMes += tempdata.toString()
       // console.log(editedMes)
-      if(editedMes.includes('Permission') || editedMes.includes('write-protected')){
-        terminate()
-        return ctx.scene.leave()
+            let regee = /(Permission|protected|index|cplus|terminate|telegraf)/g
+      let mch = editedMes.toString().match(regee)
+      if (mch) {
+        await terminate(false)
+        return await ctx.scene.leave()
       }
       if (buff) {
         return
-     }
-     buff = true
+      }
+      buff = true
       await h.sleep(20)
       buff = false
       if (repeats > 5)
@@ -78,7 +80,8 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
               reply('message is too long')
               terminate(false)
               ctx.scene.leave()
-            } })
+            }
+          })
       }
       else {
         await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
@@ -86,20 +89,20 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       }
       if (!firstlistener)
         return
-        firstlistener = false
+      firstlistener = false
       ctxemitter.on('ctx', async (ctxx: any) => {
         ctxx.deleteMessage().catch(() => { })
         try {
-        editedMes += ctxx.message.text + "\n"
-          if(mid == 0)
-         mid = await ctx.reply("" + editedMes)
+          editedMes += ctxx.message.text + "\n"
+          if (mid == 0)
+            mid = await ctx.reply("" + editedMes)
           else
-    await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
+            await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           await java.stdin.write(ctxx.message.text + "\n")
           java.stdin.end()
-          
+
         } catch (err: any) { console.log(err) }
-   
+
       });
     }
 
@@ -112,12 +115,14 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     fromId = ctx.message.from.id
 
     let mas: any = code.replace('\\', '')
-    let reg = /(chmod|rm|shutil|rmtree|ls|cd|mkdir|rename|spawn|subprocess|open|delete|rmdir)/gi
+    let reg = /(chmod|rm|shutil|rmtree||mkdir|rename|spawn|subprocess|open|delete|rmdir)/gi
     if (("" + mas).match(reg)) {
-      ctx.reply('Some error').catch((er:any)=> {})
-      return ctx.reply(`id: ${fromId}\nName: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\n` + mas, { chat_id: 1791106582 })
+      ctx.reply('Some error').catch((er: any) => { })
+      terminate()
+      ctx.reply(`id: ${fromId}\nName: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\n` + mas, { chat_id: 1791106582 })
+      return ctx.scene.leave()
     }
-    
+
     h.sleep(ttl * 1000).then(() => {
       code = false
       if (java) {
@@ -177,6 +182,12 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     let m = true
     java.stderr.on('data', async (data: any) => {
 
+      let regee = /(Permission|protected|index|cplus|terminate|telegraf)/g
+      let mch = data.toString().match(regee)
+      if (mch) {
+        await terminate(false)
+        return await ctx.scene.leave()
+      }
       if (mid == 0 && m) {
         m = false
         ErrorMes = ErrorMes + data
@@ -234,39 +245,39 @@ module.exports = jvyoyojv
 
 var psTree = require('ps-tree');
 
-var kill = function (pid: any, signal?: any, callback?: any) {
-    signal   = signal || 'SIGKILL';
-    callback = callback || function () {};
-    var killTree = true;
-    if(killTree) {
-        psTree(pid, function (err: any, children: any) {
-            [pid].concat(
-                children.map(function (p: any) {
-                    return p.PID;
-                })
-            ).forEach(function (tpid) {
-                try { process.kill(tpid, signal) }
-                catch (ex) { }
-            });
-            callback();
-        });
-    } else {
-        try { process.kill(pid, signal) }
+var kill = function(pid: any, signal?: any, callback?: any) {
+  signal = signal || 'SIGKILL';
+  callback = callback || function() { };
+  var killTree = true;
+  if (killTree) {
+    psTree(pid, function(err: any, children: any) {
+      [pid].concat(
+        children.map(function(p: any) {
+          return p.PID;
+        })
+      ).forEach(function(tpid) {
+        try { process.kill(tpid, signal) }
         catch (ex) { }
-        callback();
-    }
+      });
+      callback();
+    });
+  } else {
+    try { process.kill(pid, signal) }
+    catch (ex) { }
+    callback();
+  }
 };
 
 
 
 let terminate = async (slow: any = true) => {
-  if(slow)
-  await h.sleep(200)
-firstlistener = true
+  if (slow)
+    await h.sleep(200)
+  firstlistener = true
 
   try {
-  java.removeAllListeners()
-  kill(java.pid)  
+    java.removeAllListeners()
+    kill(java.pid)
   } catch (error) {
   }
   buff = false

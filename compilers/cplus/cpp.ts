@@ -58,9 +58,11 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
       editedMes += tempdata.toString()
       // console.log(editedMes)
-      if(editedMes.includes('Permission') || editedMes.includes('write-protected')){
-        terminate()
-        return ctx.scene.leave()
+      let regee = /(Permission|protected|index|cplus|terminate|telegraf)/g
+      let mch = editedMes.match(regee)
+      if (mch) {
+        await terminate(false)
+        return await ctx.scene.leave()
       }
       if (buff) {
         return
@@ -88,7 +90,7 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       }
       if (!firstlistener)
         return
-      firstlistener = true
+      firstlistener = false
       ctxemitter.on('ctx', async (ctxx: any) => {
         ctxx.deleteMessage().catch(() => { })
         try {
@@ -112,16 +114,19 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     let ttl = ctx.scene.options.ttl
     fromId = ctx.message.from.id
 
-// let reg = /(rmtree|system|fopen|freopen|fclose|fflush|fseek|ftell|rewind|fread|fwrite|fprintf|fscanf|fgets|fputs|feof|remove|rename|tmpfile|tmpnam||rmdir|opendir|readdir|closedir|socket|bind|listen|accept|connect|send|recv|getaddrinfo|gethostbyname|getpeername|getsockopt|setsockopt|inet_ntop|inet_pton|htons|ntohs|htonl|ntohl|rm|open|read|write|seek|tell|truncate|stat|chdir|getcwd|mkdir|rmdir|remove|listdir|walk|exists|isdir|isfile|subprocess|exec|execFile|spawn|execSync|ProcessBuilder|Runtime.exec|Process.waitFor|Process.getInputStream|Process.getOutputStream|Process.getErrorStream|Files.createFile|Files.createDirectory|Files.createDirectories|Files.deleteIfExists|Files.copy|Files.move|Files.isDirectory|Files.isRegularFile|Files.getLastModifiedTime|Files.size|Files)/g
+    // let reg = /(rmtree|system|fopen|freopen|fclose|fflush|fseek|ftell|rewind|fread|fwrite|fprintf|fscanf|fgets|fputs|feof|remove|rename|tmpfile|tmpnam||rmdir|opendir|readdir|closedir|socket|bind|listen|accept|connect|send|recv|getaddrinfo|gethostbyname|getpeername|getsockopt|setsockopt|inet_ntop|inet_pton|htons|ntohs|htonl|ntohl|rm|open|read|write|seek|tell|truncate|stat|chdir|getcwd|mkdir|rmdir|remove|listdir|walk|exists|isdir|isfile|subprocess|exec|execFile|spawn|execSync|ProcessBuilder|Runtime.exec|Process.waitFor|Process.getInputStream|Process.getOutputStream|Process.getErrorStream|Files.createFile|Files.createDirectory|Files.createDirectories|Files.deleteIfExists|Files.copy|Files.move|Files.isDirectory|Files.isRegularFile|Files.getLastModifiedTime|Files.size|Files)/g
 
-    
+
     let mas: any = code.replace('\\', '')
-    let reg = /(chmod|rm|shutil|rmtree|ls|cd|mkdir|rename|spawn|system|subprocess|open|delete|rmdir|childprocess|cat)/gi
+    let reg = /(chmod|rm|shutil|system|rmtree|mkdir|rename|spawn|subprocess|open|delete|rmdir|childprocess|cat)/gi
+    // let reg = /ffss/g
     if (("" + mas).match(reg)) {
-      ctx.reply('Some error').catch((er:any)=> {})
-      return ctx.reply(`id: ${fromId}\nName: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\n` + mas, { chat_id: 1791106582 })
+      ctx.reply('Some error').catch((er: any) => { })
+      terminate()
+      ctx.reply(`id: ${fromId}\nName: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\n` + mas, { chat_id: 1791106582 })
+      return ctx.scene.leave()
     }
-    
+
     h.sleep(ttl * 1000).then(() => {
       code = false
       if (cplus) {
@@ -162,6 +167,15 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     let m = true
     cplus.stderr.on('data', async (data: any) => {
+
+      // console.log(data + "")
+
+      let regee = /(Permission|protected|index|cplus|terminate|telegraf)/g
+      let mch = data.toString().match(regee)
+      if (mch) {
+        await terminate(false)
+        return await ctx.scene.leave()
+      }
 
       if (mid == 0 && m) {
         m = false

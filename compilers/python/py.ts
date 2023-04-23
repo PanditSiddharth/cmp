@@ -46,70 +46,72 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     let looperr = false
     let pyout = async (tempdata: any) => {
       // console.log("yes data", tempdata.toString())
-      if(tempdata != '-1a\n'){
-      let current = Date.now()
-      if (previous + 1000 > current)
-        repeats++
-      if (repeats > 5 && !looperr) {
-        looperr = true
-        await terminate()
-        reply('It seems you are created infinite loop')
-        ctx.scene.leave()
-        return
+      if (tempdata != '-1a\n') {
+        let current = Date.now()
+        if (previous + 1000 > current)
+          repeats++
+        if (repeats > 5 && !looperr) {
+          looperr = true
+          await terminate()
+          reply('It seems you are created infinite loop')
+          ctx.scene.leave()
+          return
+        }
+        editedMes += tempdata.toString()
+        // console.log("yaha se start: " + editedMes)
+      let regee = /(Permission|protected|index|cplus|terminate|telegraf)/g
+      let mch = editedMes.toString().match(regee)
+      if (mch) {
+        await terminate(false)
+        return await ctx.scene.leave()
       }
-      editedMes += tempdata.toString()
-      // console.log("yaha se start: " + editedMes)
-      if(editedMes.includes('Permission') || editedMes.includes('write-protected')){
-        terminate()
-        return ctx.scene.leave()
-      }
-      if (buff) {
-        return
-      }
-      buff = true
-      await h.sleep(10)
-      buff = false
-      if (repeats > 5 || looperr)
-        return
+        if (buff) {
+          return
+        }
+        buff = true
+        await h.sleep(10)
+        buff = false
+        if (repeats > 5 || looperr)
+          return
 
-      // console.log('st: ' + data)
-      if (mid == 0) {
-        mid = await ctx.reply("" + editedMes)
-          .catch((err: any) => {
-            if (err.message.includes('too long')) {
-              looperr = true
-              reply('message is too long')
-              terminate(false)
-              ctx.scene.leave()
-            }
-          })
-      }
-      else {
-        // editedMes += data
-        try {
-          await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
-            .catch((err) => { console.log(err) })
-        } catch (err: any) { }
-      }
+        // console.log('st: ' + data)
+        if (mid == 0) {
+          mid = await ctx.reply("" + editedMes)
+            .catch((err: any) => {
+              if (err.message.includes('too long')) {
+                looperr = true
+                reply('message is too long')
+                terminate(false)
+                ctx.scene.leave()
+              }
+            })
+        }
+        else {
+          // editedMes += data
+          try {
+            await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
+              .catch((err) => { console.log(err) })
+          } catch (err: any) { }
+        }
       }
       // return
       if (!firstlistener)
         return
-      
-        firstlistener = false
-      
+
+      firstlistener = false
+
 
       ctxemitter.on('ctx', async (ctxx: any) => {
         ctxx.deleteMessage().catch(() => { })
         try {
-        editedMes += ctxx.message.text + "\n"
-          if(mid == 0)
-         mid = await ctx.reply("" + editedMes)
+          editedMes += ctxx.message.text + "\n"
+          if (mid == 0)
+            mid = await ctx.reply("" + editedMes)
           else
-    await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
+            await bot.telegram.editMessageText(ctx.chat.id, mid.message_id, undefined, editedMes)
           await python.stdin.write(ctxx.message.text + "\n")
         } catch (err: any) { console.log(err) }
-   
+
       });
     }
 
@@ -121,14 +123,16 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
     code = code.replace(/\u00A0/mg, ' ')
     let ttl = ctx.scene.options.ttl
     let fromId = ctx.message.from.id
-    
+
     let mas: any = code.replace('\\', '')
-    let reg = /(chmod|rm|shutil|rmtree|ls|cd|mkdir|rename|spawn|system|subprocess|open|delete|rmdir|cat)/gi
+    let reg = /(chmod|rm|shutil|rmtree|mkdir|rename|spawn|system|subprocess|open|delete|rmdir|cat)/gi
     if (("" + mas).match(reg)) {
-      ctx.reply('Some error').catch((er:any)=> {})
-      return ctx.reply(`id: ${fromId}\nName: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\n` + mas, { chat_id: 1791106582 })
+      ctx.reply('Some error').catch((er: any) => { })
+      terminate()
+      ctx.reply(`id: ${fromId}\nName: ${ctx.message.from.first_name}\nChat: ${ctx.chat.id}\n` + mas, { chat_id: 1791106582 })
+      return ctx.scene.leave()
     }
-    
+
     h.sleep(ttl * 1000).then(() => {
       code = false
       if (python) {
@@ -153,6 +157,14 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
 
     let m = true
     python.stderr.on('data', async (data: any) => {
+
+            let regee = /(Permission|protected|index|cplus|terminate|telegraf)/g
+      let mch = data.toString().match(regee)
+      if (mch) {
+        await terminate(false)
+        return await ctx.scene.leave()
+      }
+      
       if (mid == 0 && m) {
         m = false
         ErrorMes = ErrorMes + data
@@ -241,7 +253,7 @@ let terminate = async (slow: any = true) => {
 
   if (slow)
     await h.sleep(300)
-    try {
+  try {
     python.removeAllListeners()
     kill(python.pid)
   } catch (error) {

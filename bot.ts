@@ -151,6 +151,7 @@ ${langcmds}
   }
 
   bot.hears(/^\/inf/i, async (ctx: any) => {
+
     let msg: any = ctx.message
     let id: any;
     let match: any = ctx.message.text.match(/@[a-zA-Z0-9_]+/)
@@ -170,9 +171,15 @@ ${(list.includes(msg.from.id) && cid.invite_link) ? "Invite Link: " + cid.invite
       }
       // return reply(ctx, 'Seems you are not given username')
     }
-
+try {
+  if(!match[0])
+    return
+  
     id = (await axios.get(`https://tguname.panditsiddharth.repl.co/${match[0]}`)).data
-
+} catch (error: any) {
+}
+    if(!id)
+      return
     if (id.className == 'User') {
       reply(ctx, `
 id : \`${id.id}\`
