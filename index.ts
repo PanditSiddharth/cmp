@@ -1,4 +1,3 @@
-import js from './compilers/js'
 import keep_alive from './keep_alive'
 import fs from 'fs';
 import bt from './bot';
@@ -8,7 +7,7 @@ import cppStarter from './starters/cppstarter'
 import jvStarter from './starters/jvstarter'
 import goStarter from './starters/gostarter'
 // let c = require('./compilers/c');
-let cpp = require('./compilers/cpp');
+
 keep_alive()
 import Hlp from './helpers';
 // let py = require('./compilers/py');
@@ -20,26 +19,13 @@ const { enter, leave } = Scenes.Stage;
 
 const codeScene = new Scenes.BaseScene<Scenes.SceneContext>("code");
 
+let func: any = {};
 codeScene.enter(async (ctx, next) => {
   await ccode(ctx, next)
 })
-let func: any = {};
 codeScene.on("message", async (ctx: any, next: any) => {
-  let code = ctx.message.text
-  let compiler = "c"
-  if (compiler == 'c') {
     await ccode(ctx, next)
-  } else if (compiler == 'cpp') {
-    cpp(code, ctx, bot)
-  }
-  else if (compiler == 'js') {
-    js(code, ctx)
-  } else if (compiler == 'py') {
-    // py(code)
-  }
-  // await next()
 });
-
 
 let pyScene = new Scenes.BaseScene<Scenes.SceneContext>("py");
 pyScene.enter(async (ctx: any) => { await pyStarter(bot, ctx) });
@@ -67,18 +53,19 @@ bt(bot)
 bot.use(session());
 bot.use(stage.middleware());
 bot.command("code", (ctx: any) => {
+
   ctx.scene.enter("code")
 });
 
 bot.hears(/^\/(code|py|python|js|node|c|cpp|cplus|go|jv|java|c\+\+)/i, async (ctx: any) => {
   let compiler: any = ctx.message.text + "";
   let memb = await ctx.getChatMember(ctx.botInfo.id)
- 
-  if(!memb.can_delete_messages){
-    if((ctx.chat.id + "").startsWith("-100"))
-    return ctx.reply('I must be admin with delete message permission')
+
+  if (!memb.can_delete_messages) {
+    if ((ctx.chat.id + "").startsWith("-100"))
+      return ctx.reply('I must be admin with delete message permission')
   }
-  
+
   if ((/^\/(py|python)/i).test(compiler))
     ctx.scene.enter("py")
   else if ((/^\/(js|node)/i).test(compiler))
@@ -124,20 +111,20 @@ let ccode = async (ctx: any, next: any) => {
       return ctx.reply('error')
     }
   }
-
-  if (!fs.existsSync(`./compilers/c${id}c.ts`)) {
-    const data = fs.readFileSync('./compilers/c.ts', 'utf8');
+  console.log('hiyo')
+  if (!fs.existsSync(`./compilers/files/c${id}c.ts`)) {
+    const data = fs.readFileSync('./compilers/cmps/c.ts', 'utf8');
     const modifiedData = data.replace(/cyoyoc/g, `c${id}c`);
-    await fs.writeFileSync(`./compilers/c${id}c.ts`, modifiedData);
+    await fs.writeFileSync(`./compilers/files/c${id}c.ts`, modifiedData);
     setTimeout(() => {
       try {
-        fs.unlinkSync(`./compilers/c${id}c.ts`)
+        fs.unlinkSync(`./compilers/files/c${id}c.ts`)
       } catch (err: any) { }
     }, ctx.scene.options.ttl * 1000);
 
   }
 
-  const moduleExports = require(`./compilers/c${id}c`);
+  const moduleExports = require(`./compilers/files/c${id}c`);
   func[`c${id}c`] = moduleExports.default || moduleExports;
 
   if (!ctx.message.reply_to_message && ctx.message.text == '/code') {

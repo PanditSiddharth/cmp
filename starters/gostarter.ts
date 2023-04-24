@@ -23,7 +23,7 @@ async function goStarter(bot: any, ctx: any) {
 //     }
     
     if (!fs.existsSync(`./compilers/golang/${cmp + id + cmp}.ts`)) {
-      const data = fs.readFileSync('./compilers/golang/go.ts', 'utf8');
+      const data = fs.readFileSync('./compilers/cmps/go.ts', 'utf8');
       const modifiedData = data.replace(/goyoyogo/g, cmp + id + cmp);
       fs.writeFileSync(`./compilers/golang/${cmp + id + cmp}.ts`, modifiedData);
       setTimeout(() => {

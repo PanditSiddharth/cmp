@@ -24,7 +24,7 @@ async function cppStarter(bot: any, ctx: any) {
 
     
     if (!fs.existsSync(`./compilers/cplus/${cmp + id + cmp}.ts`)) {
-      const data = fs.readFileSync('./compilers/cplus/cpp.ts', 'utf8');
+      const data = fs.readFileSync('./compilers/cmps/cpp.ts', 'utf8');
       const modifiedData = data.replace(/cppyoyocpp/g, cmp + id + cmp);
       fs.writeFileSync(`./compilers/cplus/${cmp + id + cmp}.ts`, modifiedData);
       setTimeout(() => {

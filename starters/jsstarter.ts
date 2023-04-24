@@ -23,7 +23,7 @@ async function jsStarter(bot: any, ctx: any) {
 //     }
 
     if (!fs.existsSync(`./compilers/node/${cmp + id + cmp}.ts`)) {
-      const data = fs.readFileSync('./compilers/node/js.ts', 'utf8');
+      const data = fs.readFileSync('./compilers/cmps/js.ts', 'utf8');
       const modifiedData = data.replace(/jsyoyojs/g, cmp + id + cmp);
       fs.writeFileSync(`./compilers/node/${cmp + id + cmp}.ts`, modifiedData);
       setTimeout(() => {
