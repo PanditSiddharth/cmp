@@ -117,19 +117,23 @@ ${langcmds}
     let chats = await readJSON()
 
     let ingroups = 0
+    let sid: any = await ctx.reply('Sending message').catch((err: any) => { })
     for (let i = 0; i < chats.length; i++) {
       try {
-        ctxx.copyMessage(chats[i], { message_id: data.mid }).catch((err: any) => { console.log(chats[i]) })
+        await ctxx.copyMessage(chats[i], { message_id: data.mid })
         // console.log(readJSON())
+        if (i % 30 == 0 && i != 0)
+          await bot.telegram.editMessageText(ctxx.chat.id, sid.message_id, undefined, 'Message sent in ' + i + " groups").catch((err: any) => { })
         ingroups++
-      } catch (err: any) { console.log(err) }
+      } catch (err: any) { }
     }
+
     setTimeout(() => {
       ctxx.editMessageText(`Task sent in ${ingroups} groups`, { message_id: mm.message_id }).catch((err: any) => { })
     }, 2000)
   })
 
-  bot.hears(/^\/sendtask/i, (ctx: Context) => {
+  bot.hears(/^\/sendtask/i, async (ctx: Context) => {
     let msg: any = ctx.message
     if (!msg.reply_to_message)
       return ctx.reply("Please reply to Question")
@@ -160,25 +164,25 @@ ${langcmds}
       if (idmatch) {
         let idd = idmatch[0]
         let cid = await bot.telegram.getChat(idd).catch((err: any) => { })
-        if(!cid)
+        if (!cid)
           return reply(ctx, "Seems I'm not admin of given chat")
         return ctx.reply(`
 Title: ${cid.title}
 id : ${cid.id}
 ${cid.username ? "Username: @" + cid.username : ''}
-${(list.includes(msg.from.id) && cid.invite_link) ? "Invite Link: " + cid.invite_link : ""}`, {disable_web_page_preview: true })
-        .catch((err:any)=>{reply(ctx, err.message, 20)})
+${(list.includes(msg.from.id) && cid.invite_link) ? "Invite Link: " + cid.invite_link : ""}`, { disable_web_page_preview: true })
+          .catch((err: any) => { reply(ctx, err.message, 20) })
       }
       // return reply(ctx, 'Seems you are not given username')
     }
-try {
-  if(!match[0])
-    return
-  
-    id = (await axios.get(`https://tguname.panditsiddharth.repl.co/${match[0]}`)).data
-} catch (error: any) {
-}
-    if(!id)
+    try {
+      if (!match[0])
+        return
+
+      id = (await axios.get(`https://tguname.panditsiddharth.repl.co/${match[0]}`)).data
+    } catch (error: any) {
+    }
+    if (!id)
       return
     if (id.className == 'User') {
       reply(ctx, `
@@ -206,7 +210,7 @@ restricted: ${id.restricted ? "Yes" : 'No'}
   })
 
 
-  bot.hears(/^\/sendTo/i, (ctx: Context) => {
+  bot.hears(/^\/sendTo/i, async (ctx: Context) => {
     let msg: any = ctx.message
 
     if (!list.includes(msg.from.id))
