@@ -1,4 +1,4 @@
-#include<stdio.h>
+#include <stdio.h>
 #include <stdarg.h>
 void printt(const char* format, ...) {
 va_list args;
@@ -16,10 +16,7 @@ int result = vscanf(format, args);
 va_end(args);
 return result;
 }
-int main() {
-int num;
-printt("Enter a number: ");
-scann("%d", &num);
-printt("You entered: %d", num);
-return 0;
+int main(){ 
+printt("100\n90 80\n70 60 50"); 
+return 0; 
 }

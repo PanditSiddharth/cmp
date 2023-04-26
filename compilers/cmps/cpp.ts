@@ -8,6 +8,7 @@ const EventEmitter = require('events');
 let mid: any = 0;
 let editedMes: any = "Output: \n"
 let cplus: any;
+let timid: any;
 let fromId: any = 0;
 const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
@@ -127,14 +128,16 @@ let cppyoyocpp = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       return ctx.scene.leave()
     }
 
-    h.sleep(ttl * 1000).then(() => {
+    timid = setTimeout(() => {
       code = false
       if (cplus) {
         ctx.reply("Timout: " + ttl + " Seconds")
         terminate(false)
         ctx.scene.leave()
       }
-    })
+    }, ttl * 1000)
+
+   
 
     fs.writeFileSync(`./files/cplus/cpt${fromId}cpt.cpp`, code);
 
@@ -265,6 +268,7 @@ let terminate = async (slow: any = true) => {
   firstlistener = true
 
   try {
+    clearTimeout(timid)
     cplus.removeAllListeners()
     kill(cplus.pid)
   } catch (error: any) {
