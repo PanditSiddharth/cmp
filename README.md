@@ -9,12 +9,12 @@ See bot is running or not by `/ping` command
 See current version and featurs of bot by `/version` command  
 
 For any other help:  
-Support Group: https://telegram.me/LogicB_support
-Updates : https://telegram.me/Logicbots
-Bot owner: https://telegram.me/PanditSiddharth
+Support Group: https://telegram.me/LogicB_support  
+Updates : https://telegram.me/Logicbots  
+Bot owner: https://telegram.me/PanditSiddharth  
 
-Testing group: https://telegram.me/IO_Coding
-Logs : https://telegram.me/Compilerlogs
+Testing group: https://telegram.me/IO_Coding  
+Logs : https://telegram.me/Compilerlogs  
 
 You can contribute in it or make your own its opensource
 
