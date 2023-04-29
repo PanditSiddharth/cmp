@@ -4,11 +4,27 @@ by @PanditSiddharth
 You can use this bot in telegram  
 Link: https://telegram.me/codecompiler_bot  
 
-Wants make your own bot ?  
+See all command of bot by `/help` command  
+See bot is running or not by `/ping` command  
+See current version and featurs of bot by `/version` command  
+
+For any other help:  
+Support Group: https://telegram.me/LogicB_support
+Updates : https://telegram.me/Logicbots
+Bot owner: https://telegram.me/PanditSiddharth
+
+Testing group: https://telegram.me/IO_Coding
+Logs : https://telegram.me/Compilerlogs
+
+You can contribute in it or make your own its opensource
+
+## Wants make your own bot ?  
 Just follow steps bellow -->  
 
 ==> Use any your hosting plateform or in replit or local steps given bellow  
-
+     
+     Replit gives free some storage and Ram you can use it
+     
 ==> clone this repo in your own server  
 
 ==> ## Now set environment variables  
