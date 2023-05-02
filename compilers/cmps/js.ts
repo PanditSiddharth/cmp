@@ -8,6 +8,7 @@ const EventEmitter = require('events');
 let mid: any = 0;
 let editedMes: any = "Output: \n"
 let node: any;
+let timid: any;
 let fromId: any = 0;
 const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
@@ -126,14 +127,14 @@ let jsyoyojs = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       return ctx.scene.leave()
     }
     
-    h.sleep(ttl * 1000).then(() => {
+    timid = setTimeout(() => {
       code = false
       if (node) {
         ctx.reply("Timout: " + ttl + " Seconds")
-        terminate()
+        terminate(false)
         ctx.scene.leave()
       }
-    })
+    }, ttl * 1000)
 
     fromId = ctx.message.from.id
     node = spawn(process.env.NODE as any, ['-e', code], {
@@ -242,6 +243,7 @@ firstlistener = true
 
   try {
   // node.stdin.pause()
+    clearTimeout(timid)
     exec(`killall -9 -g ${node.pid}`, {shell: true})
   node.removeAllListeners()
     console.log(node.pid)

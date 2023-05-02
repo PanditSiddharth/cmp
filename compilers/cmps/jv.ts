@@ -8,6 +8,7 @@ const EventEmitter = require('events');
 let mid: any = 0;
 let editedMes: any = "Output: \n"
 let java: any;
+let timid: any;
 let fromId: any = 0;
 const ctxemitter = new EventEmitter();
 let ErrorMes: any = "Error: \n"
@@ -123,24 +124,26 @@ let jvyoyojv = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       return ctx.scene.leave()
     }
 
-    h.sleep(ttl * 1000).then(() => {
+    timid = setTimeout(() => {
       code = false
       if (java) {
         ctx.reply("Timout: " + ttl + " Seconds")
-        terminate()
+        terminate(false)
         ctx.scene.leave()
       }
-    })
+    }, ttl * 1000)
 
+    const regex = /(?<=class\s)\w+(?<=[.\n]*)/g;
 
-    const regex = /(?<=\bpublic\s+class\s+)(\w+)\s*\{\s*public\s+static\s+void\s+main\s*\(\s*(String|args)\[\]\s+\w*\s*\)\s*\{/m;
     const match = code.match(regex)
+    console.log(match[0])
+    console.log("yes")
     if (match) {
-      javaFile = match[1];
+      javaFile = match[0];
       console.log('Found main class:' + javaFile);
     } else {
       terminate(false)
-      ctx.reply('No main class found').catch((err: any)=> {})
+      ctx.reply('No main class found').catch((err: any) => { })
       console.log('No main class found.');
       return ctx.scene.leave()
     }
@@ -269,14 +272,13 @@ var kill = function(pid: any, signal?: any, callback?: any) {
   }
 };
 
-
-
 let terminate = async (slow: any = true) => {
   if (slow)
     await h.sleep(200)
   firstlistener = true
 
   try {
+    clearTimeout(timid)
     java.removeAllListeners()
     kill(java.pid)
   } catch (error) {

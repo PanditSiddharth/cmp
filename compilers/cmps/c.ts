@@ -5,6 +5,7 @@ import { Telegraf } from "telegraf"
 const { spawn, exec } = require('child_process');
 let change = false;
 let mid = 0;
+let timid: any;
 let programProcess: any = null;
 let gccProcess: any = null;
 let mess: any;
@@ -227,7 +228,7 @@ const cyoyoc = async (code: any, ctx: any, bot: Telegraf) => {
       bot.telegram.sendMessage(-1001782169405, mesg).catch(() => { })
     }
 
-    setTimeout(() => {
+timid = setTimeout(() => {
       try {
         if (programProcess) {
           // terminated = false
@@ -397,6 +398,9 @@ module.exports = cyoyoc;
 async function terminate(loop = true) {
   if (programProcess)
     programProcess.removeAllListeners();
+  try {
+    clearTimeout(timid)
+  } catch (error) { }
   await h.sleep(300)
   ok = false
   editedMes = 'Your Code: \n';

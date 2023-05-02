@@ -7,6 +7,7 @@ import fs from "fs"
 let h = new Hlp();
 const EventEmitter = require('events');
 let mid: any = 0;
+let timid: any;
 let editedMes: any = "Output: \n"
 let python: any;
 let fromId: any = 0;
@@ -133,14 +134,14 @@ let pyyoyopy = async (bot: Telegraf, ctx: any, obj: Opt = {}) => {
       return ctx.scene.leave()
     }
 
-    h.sleep(ttl * 1000).then(() => {
+    timid = setTimeout(() => {
       code = false
       if (python) {
         ctx.reply("Timout: " + ttl + " Seconds")
-        terminate()
+        terminate(false)
         ctx.scene.leave()
       }
-    })
+    }, ttl * 1000)
 
     fromId = ctx.message.from.id
     python = spawn(process.env.PYTHON as any, ['-c', code], {
@@ -254,6 +255,7 @@ let terminate = async (slow: any = true) => {
   if (slow)
     await h.sleep(300)
   try {
+    clearTimeout(timid)
     python.removeAllListeners()
     kill(python.pid)
   } catch (error) {

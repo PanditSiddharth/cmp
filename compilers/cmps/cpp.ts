@@ -259,8 +259,6 @@ var kill = function(pid: any, signal?: any, callback?: any) {
   }
 };
 
-
-
 let terminate = async (slow: any = true) => {
 
   if (slow)

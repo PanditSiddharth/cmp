@@ -4,7 +4,7 @@ import axios from "axios"
 import mdb from "./db";
 import Hlp from './helpers'
 let h = new Hlp()
-let version = `𝐕𝐞𝐫𝐬𝐢𝐨𝐧: 0.4.1\n𝐕𝐞𝐫𝐬𝐢𝐨𝐧 𝐧𝐨.: 8`
+let version = `𝐕𝐞𝐫𝐬𝐢𝐨𝐧: 0.4.2\n𝐕𝐞𝐫𝐬𝐢𝐨𝐧 𝐧𝐨.: 9`
 let langcmds = `/𝗰𝗼𝗱𝗲 to excecute your c code
 /𝗽𝘆 𝗼𝗿 /𝗽𝘆𝘁𝗵𝗼𝗻 to execute your python code
 /𝗷𝘀 𝗼𝗿 /𝗻𝗼𝗱𝗲 to execute your javascript code

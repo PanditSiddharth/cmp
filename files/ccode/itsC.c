@@ -1,4 +1,4 @@
-#include <stdio.h>
+#include<stdio.h>
 #include <stdarg.h>
 void printt(const char* format, ...) {
 va_list args;
@@ -16,7 +16,15 @@ int result = vscanf(format, args);
 va_end(args);
 return result;
 }
-int main(){ 
-printt("100\n90 80\n70 60 50"); 
-return 0; 
+int main ()
+{
+float gross_salary, net_salary;
+printt("Enter the salary of employee\n");
+scann("%f", &gross_salary);
+if (gross_salary<10000);
+net_salary=gross_salary;
+if (gross_salary >= 10000);
+net_salary=gross_salary-0.15*gross_salary;
+printt("\n Net salary is Rupees %f\n", net_salary);
+return 0;
 }
