@@ -98,7 +98,8 @@ ${langcmds}
 /leave to leave session (if you not want excecute your code)
 /help to see updated commands in bot
 
-  bot owner @Panditsiddharth 
+bot owner @Panditsiddharth 
+@LogicBOts @LogicB_Support
 `);
   })
 
